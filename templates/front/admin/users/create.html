@@ -1,0 +1,390 @@
+{% extends "front/admin/master.html" %}
+
+{% block title %}
+    Add User
+{% endblock %}
+
+{% block page_content %}
+
+    <div class="page-title mb-4">
+        <h2>Add User</h2>
+
+        <p class="text-muted">
+            Create a new user account
+        </p>
+    </div>
+
+
+    <!-- =========================
+         CARD
+    ========================== -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form
+                    method="POST"
+                    action="{{ url_for('admin.create_user') }}"
+                    enctype="multipart/form-data"
+            >
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <!-- =========================
+                     PROFILE IMAGE
+                ========================== -->
+
+                <div class="text-center mb-4">
+
+                    <img
+                            id="previewImage"
+                            src="{{ url_for(
+                        'static',
+                        filename='uploads/users/no-images.jpg'
+                    ) }}"
+                            width="120"
+                            height="120"
+                            class="user-preview"
+                            style="
+                        width: 120px;
+                        height: 120px;
+                        object-fit: cover;
+                        border-radius: 50%;
+                        border: 2px solid #ddd;
+                    "
+                            alt="Profile Image"
+                    >
+
+                    <div class="mt-3">
+
+                        <label
+                                for="profile"
+                                class="form-label"
+                        >
+                            Profile Image
+                        </label>
+
+                        <input
+                                type="file"
+                                name="profile"
+                                id="profile"
+                                class="form-control"
+                                accept=".jpg,.jpeg,.png,.gif,.webp"
+                        >
+
+                        <small class="text-muted">
+                            Optional profile image.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     FULL NAME
+                ========================== -->
+
+                <div class="mb-3">
+
+                    <label
+                            for="name"
+                            class="form-label"
+                    >
+                        Full Name
+                    </label>
+
+                    <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            class="form-control"
+                            placeholder="Enter full name"
+                            value="{{ request.form.get('name', '') }}"
+                            required
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     USERNAME
+                ========================== -->
+
+                <div class="mb-3">
+
+                    <label
+                            for="username"
+                            class="form-label"
+                    >
+                        Username
+                    </label>
+
+                    <input
+                            type="text"
+                            name="username"
+                            id="username"
+                            class="form-control"
+                            placeholder="Enter username"
+                            value="{{ request.form.get('username', '') }}"
+                            required
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     EMAIL
+                ========================== -->
+
+                <div class="mb-3">
+
+                    <label
+                            for="email"
+                            class="form-label"
+                    >
+                        Email
+                    </label>
+
+                    <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            class="form-control"
+                            placeholder="Enter email"
+                            value="{{ request.form.get('email', '') }}"
+                            required
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     PASSWORD
+                ========================== -->
+
+                <div class="mb-3">
+
+                    <label
+                            for="password"
+                            class="form-label"
+                    >
+                        Password
+                    </label>
+
+                    <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="form-control"
+                            placeholder="Enter password"
+                            required
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     ROLE
+                ========================== -->
+
+                <div class="mb-3">
+
+                    <label
+                            for="role"
+                            class="form-label"
+                    >
+                        Role
+                    </label>
+
+                    <select
+                            name="role"
+                            id="role"
+                            class="form-select"
+                            required
+                    >
+
+                        <option
+                                value="Staff"
+                                {% if request.form.get('role', 'Staff') == 'Staff' %}
+                                selected
+                                {% endif %}
+                        >
+                            Staff
+                        </option>
+
+                        <option
+                                value="Admin"
+                                {% if request.form.get('role') == 'Admin' %}
+                                selected
+                                {% endif %}
+                        >
+                            Admin
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================
+                     STATUS
+                ========================== -->
+
+                <div class="mb-4">
+
+                    <label
+                            for="status"
+                            class="form-label"
+                    >
+                        Status
+                    </label>
+
+                    <select
+                            name="status"
+                            id="status"
+                            class="form-select"
+                            required
+                    >
+
+                        <option
+                                value="Active"
+                                {% if request.form.get('status', 'Active') == 'Active' %}
+                                selected
+                                {% endif %}
+                        >
+                            Active
+                        </option>
+
+                        <option
+                                value="Inactive"
+                                {% if request.form.get('status') == 'Inactive' %}
+                                selected
+                                {% endif %}
+                        >
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================
+                     BUTTONS
+                ========================== -->
+
+                <div class="d-flex gap-2">
+
+                    <button
+                            type="submit"
+                            class="btn btn-success"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+
+                        Save User
+
+                    </button>
+
+
+                    <a
+                            href="{{ url_for('admin.admin_users') }}"
+                            class="btn btn-secondary"
+                    >
+
+                        <i class="fa-solid fa-xmark me-1"></i>
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         IMAGE PREVIEW
+    ========================== -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const profileInput =
+                document.getElementById("profile");
+
+            const previewImage =
+                document.getElementById("previewImage");
+
+
+            if (!profileInput || !previewImage) {
+                return;
+            }
+
+
+            profileInput.addEventListener(
+                "change",
+                function (event) {
+
+                    const file =
+                        event.target.files[0];
+
+
+                    if (!file) {
+
+                        previewImage.src =
+                            "{{ url_for(
+                        'static',
+                        filename='uploads/users/no-images.jpg'
+                    ) }}";
+
+                        return;
+                    }
+
+
+                    /*
+                     * Check image type
+                     */
+
+                    if (!file.type.startsWith("image/")) {
+
+                        alert(
+                            "Please select a valid image file."
+                        );
+
+                        profileInput.value = "";
+
+                        previewImage.src =
+                            "{{ url_for(
+                        'static',
+                        filename='uploads/users/no-images.jpg'
+                    ) }}";
+
+                        return;
+                    }
+
+
+                    /*
+                     * Preview image
+                     */
+
+                    const imageURL =
+                        URL.createObjectURL(file);
+
+                    previewImage.src =
+                        imageURL;
+
+                }
+            );
+
+        });
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "front/admin/master.html" %}
+{% block title %}Products | VELORA{% endblock %}
+{% block page_content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h2>Products</h2><p class="text-muted mb-0">Database-backed product inventory.</p></div><a class="btn btn-primary" href="{{ url_for('admin.create_product') }}">+ Add Product</a></div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+<thead class="table-dark"><tr><th>ID</th><th>Image</th><th>Name</th><th>Category</th><th>Brand</th><th>Cost</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+<tbody>{% for p in products %}<tr><td>{{ p.id }}</td><td>{% if p.thumbnail %}<img src="{% if p.thumbnail.startswith('http') %}{{ p.thumbnail }}{% else %}{{ url_for('static',filename='uploads/products/'+p.thumbnail) }}{% endif %}" style="width:55px;height:55px;object-fit:cover;border-radius:8px">{% else %}<span class="text-muted">No image</span>{% endif %}</td><td>{{ p.name }}</td><td>{{ p.category.name if p.category else '-' }}</td><td>{{ p.brand.name if p.brand else '-' }}</td><td>${{ '%.2f'|format(p.cost|float) }}</td><td>${{ '%.2f'|format(p.price|float) }}</td><td><span class="badge {{ 'bg-success' if p.stock > 0 else 'bg-danger' }}">{{ p.stock }}</span></td><td class="text-nowrap"><a class="btn btn-sm btn-warning" href="{{ url_for('admin.edit_product',id=p.id) }}">Edit</a><form class="d-inline" method="POST" action="{{ url_for('admin.delete_product',id=p.id) }}" onsubmit="return confirm('Delete this product?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-danger">Delete</button></form></td></tr>{% else %}<tr><td colspan="9" class="text-center py-4">No products yet. Add your first product.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

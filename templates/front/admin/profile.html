@@ -1,0 +1,1142 @@
+{##}
+{#{% extends "front/admin/master.html" %}#}
+{##}
+{#{% block title %}Admin Profile | VELORA{% endblock %}#}
+{##}
+{#{% block page_content %}#}
+{##}
+{#<div class="page-title mb-4">#}
+{#    <h2>Admin Profile</h2>#}
+{#    <p class="text-muted">#}
+{#        Manage your administrator account information.#}
+{#    </p>#}
+{#</div>#}
+{##}
+{##}
+{#<div class="row">#}
+{##}
+{#    <!-- Profile Form -->#}
+{#    <div class="col-lg-8">#}
+{##}
+{#        <div class="card shadow-sm border-0">#}
+{##}
+{#            <div class="card-body p-4">#}
+{##}
+{#                <!-- Profile Header -->#}
+{#                <div class="d-flex align-items-center mb-4">#}
+{##}
+{#                    <div#}
+{#                        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"#}
+{#                        style="width:65px;height:65px;font-size:26px;"#}
+{#                    >#}
+{#                        {{#}
+{#                            (#}
+{#                                current_user.get('name')#}
+{#                                or current_user.get('username')#}
+{#                                or 'A'#}
+{#                            )[0]|upper#}
+{#                        }}#}
+{#                    </div>#}
+{##}
+{#                    <div>#}
+{##}
+{#                        <h4 class="mb-1">#}
+{#                            {{#}
+{#                                current_user.get(#}
+{#                                    'name',#}
+{#                                    current_user.get('username', 'Admin')#}
+{#                                )#}
+{#                            }}#}
+{#                        </h4>#}
+{##}
+{#                        <span class="badge bg-primary">#}
+{#                            Administrator#}
+{#                        </span>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{##}
+{#                <!-- Success / Error Messages -->#}
+{#                {% with messages = get_flashed_messages(with_categories=true) %}#}
+{##}
+{#                    {% if messages %}#}
+{##}
+{#                        {% for category, message in messages %}#}
+{##}
+{#                            <div class="alert alert-{{ category }} alert-dismissible fade show">#}
+{##}
+{#                                {{ message }}#}
+{##}
+{#                                <button#}
+{#                                    type="button"#}
+{#                                    class="btn-close"#}
+{#                                    data-bs-dismiss="alert"#}
+{#                                ></button>#}
+{##}
+{#                            </div>#}
+{##}
+{#                        {% endfor %}#}
+{##}
+{#                    {% endif %}#}
+{##}
+{#                {% endwith %}#}
+{##}
+{##}
+{#                <!-- Profile Form -->#}
+{#                <form#}
+{#                    method="POST"#}
+{#                    action="{{ url_for('admin.admin_profile') }}"#}
+{#                >#}
+{##}
+{#                    <!-- CSRF -->#}
+{#                    <input#}
+{#                        type="hidden"#}
+{#                        name="csrf_token"#}
+{#                        value="{{ csrf_token() }}"#}
+{#                    >#}
+{##}
+{##}
+{#                    <!-- Name -->#}
+{#                    <div class="mb-3">#}
+{##}
+{#                        <label class="form-label fw-semibold">#}
+{#                            Name#}
+{#                        </label>#}
+{##}
+{#                        <input#}
+{#                            type="text"#}
+{#                            name="name"#}
+{#                            class="form-control"#}
+{#                            value="{{ current_user.get('name', '') }}"#}
+{#                            placeholder="Enter your name"#}
+{#                            required#}
+{#                        >#}
+{##}
+{#                    </div>#}
+{##}
+{##}
+{#                    <!-- Username -->#}
+{#                    <div class="mb-3">#}
+{##}
+{#                        <label class="form-label fw-semibold">#}
+{#                            Username#}
+{#                        </label>#}
+{##}
+{#                        <input#}
+{#                            type="text"#}
+{#                            name="username"#}
+{#                            class="form-control"#}
+{#                            value="{{ current_user.get('username', '') }}"#}
+{#                            placeholder="Enter your username"#}
+{#                            required#}
+{#                        >#}
+{##}
+{#                    </div>#}
+{##}
+{##}
+{#                    <!-- Role -->#}
+{#                    <div class="mb-3">#}
+{##}
+{#                        <label class="form-label fw-semibold">#}
+{#                            Role#}
+{#                        </label>#}
+{##}
+{#                        <input#}
+{#                            type="text"#}
+{#                            class="form-control"#}
+{#                            value="Administrator"#}
+{#                            readonly#}
+{#                        >#}
+{##}
+{#                    </div>#}
+{##}
+{##}
+{#                    <!-- Buttons -->#}
+{#                    <div class="mt-4">#}
+{##}
+{#                        <button#}
+{#                            type="submit"#}
+{#                            class="btn btn-primary"#}
+{#                        >#}
+{#                            <i class="fa-solid fa-save me-1"></i>#}
+{#                            Save Changes#}
+{#                        </button>#}
+{##}
+{#                        <a#}
+{#                            href="{{ url_for('admin.admin_dashboard') }}"#}
+{#                            class="btn btn-secondary ms-2"#}
+{#                        >#}
+{#                            <i class="fa-solid fa-arrow-left me-1"></i>#}
+{#                            Back#}
+{#                        </a>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </form>#}
+{##}
+{#            </div>#}
+{##}
+{#        </div>#}
+{##}
+{#    </div>#}
+{##}
+{##}
+{#    <!-- Account Information -->#}
+{#    <div class="col-lg-4">#}
+{##}
+{#        <div class="card shadow-sm border-0">#}
+{##}
+{#            <div class="card-body p-4">#}
+{##}
+{#                <h5 class="mb-4">#}
+{#                    Account Information#}
+{#                </h5>#}
+{##}
+{##}
+{#                <div class="d-flex align-items-center mb-4">#}
+{##}
+{#                    <i class="fa-solid fa-user-shield fa-lg me-3"></i>#}
+{##}
+{#                    <div>#}
+{##}
+{#                        <small class="text-muted d-block">#}
+{#                            Account Type#}
+{#                        </small>#}
+{##}
+{#                        <strong>#}
+{#                            Administrator#}
+{#                        </strong>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{##}
+{#                <div class="d-flex align-items-center mb-4">#}
+{##}
+{#                    <i class="fa-solid fa-circle-check fa-lg me-3"></i>#}
+{##}
+{#                    <div>#}
+{##}
+{#                        <small class="text-muted d-block">#}
+{#                            Status#}
+{#                        </small>#}
+{##}
+{#                        <strong class="text-success">#}
+{#                            Active#}
+{#                        </strong>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{##}
+{#                <div class="d-flex align-items-center">#}
+{##}
+{#                    <i class="fa-solid fa-shield-halved fa-lg me-3"></i>#}
+{##}
+{#                    <div>#}
+{##}
+{#                        <small class="text-muted d-block">#}
+{#                            Access#}
+{#                        </small>#}
+{##}
+{#                        <strong>#}
+{#                            Admin Panel#}
+{#                        </strong>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{#            </div>#}
+{##}
+{#        </div>#}
+{##}
+{#    </div>#}
+{##}
+{#</div>#}
+{##}
+{#{% endblock %}#}
+{##}
+{% extends "front/admin/master.html" %}
+
+{% block title %}Admin Profile | VELORA{% endblock %}
+
+{% block page_content %}
+
+{% set profile_image =
+    current_user.get('image')
+    or current_user.get('profile')
+%}
+
+
+<style>
+
+/* ==========================================
+   PROFILE PAGE
+========================================== */
+
+.profile-page {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+}
+
+
+/* ==========================================
+   PROFILE HEADER CARD
+========================================== */
+
+.profile-main-card {
+
+    background: #ffffff;
+
+    border: 1px solid #edf0f5;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ==========================================
+   PROFILE HEADER
+========================================== */
+
+.profile-header {
+
+    padding: 28px 32px;
+
+    border-bottom: 1px solid #edf0f5;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+
+/* ==========================================
+   PROFILE IMAGE
+========================================== */
+
+.profile-image {
+
+    width: 88px;
+
+    height: 88px;
+
+    min-width: 88px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 3px solid #ffffff;
+
+    box-shadow:
+        0 3px 14px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ==========================================
+   PROFILE LETTER
+========================================== */
+
+.profile-letter {
+
+    width: 88px;
+
+    height: 88px;
+
+    min-width: 88px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #1769ff;
+
+    color: white;
+
+    font-size: 34px;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 3px 14px rgba(23, 105, 255, 0.25);
+}
+
+
+/* ==========================================
+   PROFILE NAME
+========================================== */
+
+.profile-name {
+
+    font-size: 25px;
+
+    font-weight: 600;
+
+    color: #172033;
+
+    margin-bottom: 6px;
+}
+
+
+.profile-subtitle {
+
+    color: #7a8494;
+
+    font-size: 14px;
+}
+
+
+/* ==========================================
+   FORM SECTION
+========================================== */
+
+.profile-form {
+
+    padding: 30px 32px;
+}
+
+
+/* ==========================================
+   FORM LABEL
+========================================== */
+
+.profile-label {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #263143;
+
+    margin-bottom: 8px;
+}
+
+
+/* ==========================================
+   FORM INPUT
+========================================== */
+
+.profile-form .form-control {
+
+    min-height: 46px;
+
+    border: 1px solid #dfe4ec;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+
+    box-shadow: none;
+}
+
+
+.profile-form .form-control:focus {
+
+    border-color: #1769ff;
+
+    box-shadow:
+        0 0 0 3px rgba(23, 105, 255, 0.10);
+}
+
+
+/* ==========================================
+   IMAGE UPLOAD
+========================================== */
+
+.image-upload-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 18px;
+
+    border: 1px dashed #d5dce7;
+
+    border-radius: 12px;
+
+    background: #fafbfc;
+}
+
+
+.image-preview {
+
+    width: 90px;
+
+    height: 90px;
+
+    min-width: 90px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 2px solid #e1e6ee;
+}
+
+
+.image-placeholder {
+
+    width: 90px;
+
+    height: 90px;
+
+    min-width: 90px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #eef3ff;
+
+    color: #1769ff;
+
+    font-size: 28px;
+}
+
+
+/* ==========================================
+   ACCOUNT CARD
+========================================== */
+
+.account-card {
+
+    background: #ffffff;
+
+    border: 1px solid #edf0f5;
+
+    border-radius: 16px;
+
+    padding: 28px;
+
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+
+.account-title {
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    color: #172033;
+
+    margin-bottom: 24px;
+}
+
+
+/* ==========================================
+   ACCOUNT ITEM
+========================================== */
+
+.account-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #f0f2f5;
+}
+
+
+.account-item:last-child {
+
+    border-bottom: none;
+}
+
+
+.account-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    min-width: 42px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f0f5ff;
+
+    color: #1769ff;
+}
+
+
+.account-label {
+
+    display: block;
+
+    font-size: 12px;
+
+    color: #8a93a2;
+
+    margin-bottom: 3px;
+}
+
+
+.account-value {
+
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #202938;
+
+    word-break: break-word;
+}
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+.status-active {
+
+    color: #198754;
+}
+
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.profile-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 25px;
+}
+
+
+.profile-actions .btn {
+
+    min-height: 44px;
+
+    border-radius: 8px;
+
+    padding: 0 18px;
+
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+</style>
+
+
+<div class="profile-page">
+
+
+    <!-- ====================================== -->
+    <!-- PAGE TITLE -->
+    <!-- ====================================== -->
+
+    <div class="page-title mb-4">
+
+        <h2>
+            Admin Profile
+        </h2>
+
+        <p class="text-muted">
+            Manage your administrator account information.
+        </p>
+
+    </div>
+
+
+    <!-- ====================================== -->
+    <!-- FLASH MESSAGES -->
+    <!-- ====================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert alert-{{ category }} alert-dismissible fade show"
+                    role="alert"
+                >
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <div class="row g-4">
+
+
+        <!-- ====================================== -->
+        <!-- PROFILE FORM -->
+        <!-- ====================================== -->
+
+        <div class="col-lg-8">
+
+            <div class="profile-main-card">
+
+
+                <!-- PROFILE HEADER -->
+
+                <div class="profile-header">
+
+                    {% if profile_image %}
+
+                        <img
+                            src="{{ url_for('static', filename=profile_image) }}"
+                            alt="Administrator"
+                            class="profile-image"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        >
+
+                        <div
+                            class="profile-letter"
+                            style="display:none;"
+                        >
+                            {{
+                                (
+                                    current_user.get('name')
+                                    or current_user.get('username')
+                                    or 'A'
+                                )[0]|upper
+                            }}
+                        </div>
+
+                    {% else %}
+
+                        <div class="profile-letter">
+
+                            {{
+                                (
+                                    current_user.get('name')
+                                    or current_user.get('username')
+                                    or 'A'
+                                )[0]|upper
+                            }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <div>
+
+                        <div class="profile-name">
+
+                            {{
+                                current_user.get(
+                                    'name',
+                                    current_user.get(
+                                        'username',
+                                        'Administrator'
+                                    )
+                                )
+                            }}
+
+                        </div>
+
+                        <div class="profile-subtitle">
+
+                            Administrator Account
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM -->
+
+                <div class="profile-form">
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('admin.admin_profile') }}"
+                        enctype="multipart/form-data"
+                    >
+
+
+                        <!-- CSRF -->
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+
+                        <!-- PROFILE IMAGE -->
+
+                        <div class="mb-4">
+
+                            <label class="profile-label">
+                                Profile Image
+                            </label>
+
+
+                            <div class="image-upload-box">
+
+
+                                {% if profile_image %}
+
+                                    <img
+                                        src="{{ url_for('static', filename=profile_image) }}"
+                                        alt="Current Profile"
+                                        class="image-preview"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                    >
+
+                                    <div
+                                        class="image-placeholder"
+                                        style="display:none;"
+                                    >
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="image-placeholder">
+
+                                        <i class="fa-solid fa-user"></i>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <div class="flex-grow-1">
+
+                                    <input
+                                        type="file"
+                                        name="profile_image"
+                                        class="form-control"
+                                        accept=".jpg,.jpeg,.png,.gif,.webp"
+                                    >
+
+                                    <small class="text-muted d-block mt-2">
+
+                                        JPG, JPEG, PNG, GIF or WEBP.
+                                        Choose a new image to update your profile.
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- NAME -->
+
+                        <div class="mb-3">
+
+                            <label class="profile-label">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                value="{{ current_user.get('name', '') }}"
+                                placeholder="Enter your name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- USERNAME -->
+
+                        <div class="mb-3">
+
+                            <label class="profile-label">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                name="username"
+                                class="form-control"
+                                value="{{ current_user.get('username', '') }}"
+                                placeholder="Enter your username"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="mb-3">
+
+                            <label class="profile-label">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                value="{{ current_user.get('email', '') }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- ROLE -->
+
+                        <div class="mb-3">
+
+                            <label class="profile-label">
+                                Role
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="Administrator"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+
+                        <div class="profile-actions">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+
+                                <i class="fa-solid fa-floppy-disk me-1"></i>
+
+                                Save Changes
+
+                            </button>
+
+
+                            <a
+                                href="{{ url_for('admin.admin_dashboard') }}"
+                                class="btn btn-secondary"
+                            >
+
+                                <i class="fa-solid fa-arrow-left me-1"></i>
+
+                                Back
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- ACCOUNT INFORMATION -->
+        <!-- ====================================== -->
+
+        <div class="col-lg-4">
+
+            <div class="account-card">
+
+                <div class="account-title">
+                    Account Information
+                </div>
+
+
+                <!-- ACCOUNT TYPE -->
+
+                <div class="account-item">
+
+                    <div class="account-icon">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span class="account-label">
+                            Account Type
+                        </span>
+
+                        <span class="account-value">
+                            Administrator
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="account-item">
+
+                    <div class="account-icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span class="account-label">
+                            Status
+                        </span>
+
+                        <span class="account-value status-active">
+                            Active
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACCESS -->
+
+                <div class="account-item">
+
+                    <div class="account-icon">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span class="account-label">
+                            Access
+                        </span>
+
+                        <span class="account-value">
+                            Admin Panel
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- USERNAME -->
+
+                <div class="account-item">
+
+                    <div class="account-icon">
+
+                        <i class="fa-solid fa-at"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span class="account-label">
+                            Username
+                        </span>
+
+                        <span class="account-value">
+                            {{ current_user.get('username', 'admin') }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="account-item">
+
+                    <div class="account-icon">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span class="account-label">
+                            Email
+                        </span>
+
+                        <span class="account-value">
+                            {{ current_user.get('email', 'Not available') }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

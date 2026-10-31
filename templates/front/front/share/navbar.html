@@ -1,0 +1,19 @@
+<header class="main-header">
+    <div class="container nav-wrap">
+        <a href="{{ url_for('front.home') }}" class="brand-logo">VELORA</a>
+        <nav class="nav-menu"><a href="{{ url_for('front.home') }}">Home</a><a
+                href="{{ url_for('front.about') }}">About</a><a href="{{ url_for('front.shop') }}">Shop</a><a
+                href="{{ url_for('front.product_list') }}">Collection</a><a href="{{ url_for('front.contact') }}">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            {% if session.get('user') %}<a href="{{ url_for('front.account') }}">Account</a>
+                <a href="{{ url_for('front.logout') }}">Logout</a>{% else %}
+                <a href="{{ url_for('front.login') }}">Login</a>
+                <a href="{{ url_for('front.register') }}">Register</a>{% endif %}
+            <a href="{{ url_for('front.cart') }}" class="cart-btn">Bag{% if cart_count %} ({{ cart_count }}
+                ){% endif %}</a>
+            {% if session.get('user',{}).get('role') == 'Admin' %}
+                <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>{% endif %}
+        </div>
+    </div>
+</header>

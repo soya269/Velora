@@ -1,0 +1,18 @@
+{% extends "front/admin/parent.html" %}
+{% block content %}
+    <div class="wrapper">
+        {% include "front/admin/includes/sidebar.html" %}
+        <div class="main">
+            {% include "front/admin/includes/navbar.html" %}
+            <main class="content p-4">
+                {% with messages=get_flashed_messages(with_categories=true) %}
+                    {% for category,message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show">{{ message }}
+                            <button class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}{% endwith %}
+                {% block page_content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+{% endblock %}

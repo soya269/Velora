@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VELORA | Luxury Fashion</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='front/style.css') }}">
+     <style>
+        :root {
+            --velora-black: #24221f;
+            --velora-cream: #f7f5f0;
+            --velora-beige: #e9e3d9;
+            --velora-muted: #77736d;
+        }
+
+        body {
+            background: #fff;
+            color: var(--velora-black);
+            font-family: Arial, sans-serif;
+        }
+
+        .section-label {
+            color: #9b8a72;
+            font-size: 11px;
+            letter-spacing: 3px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-family: Georgia, serif;
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 500;
+            letter-spacing: -1px;
+        }
+
+        /* HERO */
+        .hero-section {
+            background: var(--velora-cream);
+            padding: 55px 0;
+        }
+
+        .hero-slide {
+            min-height: 480px;
+            background: var(--velora-cream);
+        }
+
+        .hero-content {
+            padding: 45px 55px;
+        }
+
+        .hero-subtitle {
+            color: #9b8a72;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-family: Georgia, serif;
+            font-size: clamp(36px, 5vw, 58px);
+            font-weight: 500;
+            line-height: 1.15;
+            margin-top: 20px;
+        }
+
+        .hero-description {
+            color: var(--velora-muted);
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 450px;
+        }
+
+        .hero-price {
+            font-size: 25px;
+            font-weight: 600;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 480px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .btn-velora {
+            background: var(--velora-black);
+            color: #fff;
+            border: 1px solid var(--velora-black);
+            padding: 13px 28px;
+            border-radius: 2px;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-velora:hover {
+            background: transparent;
+            color: var(--velora-black);
+            border-color: var(--velora-black);
+        }
+
+        .btn-velora-outline {
+            background: transparent;
+            color: var(--velora-black);
+            border: 1px solid #c9c3b9;
+            padding: 13px 28px;
+            border-radius: 2px;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-velora-outline:hover {
+            background: var(--velora-black);
+            color: #fff;
+        }
+
+        .hero-indicators {
+            margin-bottom: 15px;
+        }
+
+        .hero-indicators button {
+            background-color: #8b8174 !important;
+        }
+
+        /* CATEGORY */
+        .category-section {
+            padding: 85px 0;
+        }
+
+        .category-card {
+            border: none;
+            background: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-image {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            background: var(--velora-cream);
+        }
+
+        .category-placeholder {
+            height: 230px;
+            background: var(--velora-cream);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #a39b90;
+            font-family: Georgia, serif;
+            font-size: 20px;
+        }
+
+        .category-name {
+            font-family: Georgia, serif;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .category-link {
+            color: #71695f;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-bottom: 1px solid #b9ad9d;
+            padding-bottom: 4px;
+        }
+
+        .category-link:hover {
+            color: #000;
+        }
+
+        /* PRODUCTS */
+        .products-section {
+            background: #f8f7f4;
+            padding: 85px 0;
+        }
+
+        .product-card {
+            border: none;
+            background: #fff;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+            background: var(--velora-cream);
+        }
+
+        .product-category {
+            color: #9b8a72;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .product-name {
+            font-family: Georgia, serif;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .product-button {
+            display: block;
+            text-decoration: none;
+            color: var(--velora-black);
+            border: 1px solid #d7d1c8;
+            padding: 11px;
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .product-button:hover {
+            background: var(--velora-black);
+            color: #fff;
+            border-color: var(--velora-black);
+        }
+
+        /* BRAND MESSAGE */
+        .brand-message {
+            padding: 75px 15px;
+            text-align: center;
+            background: #fff;
+        }
+
+        .brand-message h2 {
+            font-family: Georgia, serif;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 500;
+        }
+
+        .brand-message p {
+            color: var(--velora-muted);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 15px auto 0;
+        }
+
+        @media (max-width: 767px) {
+            .hero-section {
+                padding: 20px 0;
+            }
+
+            .hero-slide {
+                min-height: auto;
+            }
+
+            .hero-content {
+                padding: 35px 25px;
+            }
+
+            .hero-image {
+                height: 320px;
+            }
+
+            .category-section,
+            .products-section {
+                padding: 55px 0;
+            }
+
+            .category-image,
+            .category-placeholder {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+{% include 'front/front/share/navbar.html' %}
+<main>
+    <!-- HERO SLIDER -->
+    <section class="bg-black text-white py-5">
+        <div class="container">
+            <div
+                id="heroSlider"
+                class="carousel slide carousel-fade"
+                data-bs-ride="carousel"
+                data-bs-interval="2500">
+                <!-- indicators -->
+                <div class="carousel-indicators">
+                    {% for product in products[:5] %}
+                    <button
+                        type="button"
+                        data-bs-target="#heroSlider"
+                        data-bs-slide-to="{{ loop.index0 }}"
+                        class="{% if loop.first %}active{% endif %}"
+                    ></button>
+                    {% endfor %}
+                </div>
+                <!-- slider -->
+                <div class="carousel-inner rounded-4 overflow-hidden shadow-lg">
+                    {% for product in products[:5] %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <div class="row align-items-center p-5 bg-black">
+                            <!-- LEFT -->
+                            <div class="col-lg-6">
+                                <span class="badge bg-danger px-3 py-2 fs-6">
+                                    🔥 HOT PROMOTION
+                                </span>
+                                <span class="badge bg-warning text-dark px-3 py-2 fs-6 ms-2">
+                                    ⭐ VIRAL PRODUCT
+                                </span>
+                                <h1 class="display-4 fw-bold mt-4">
+                                    {{ product.title }}
+                                </h1>
+                                <p class="text-light mt-3">
+                                    {{ product.description[:160] }}...
+                                </p>
+                                <div class="mt-4">
+                                    <span class="text-secondary text-decoration-line-through fs-4">
+                                        ${{ product.price + 40 }}
+                                    </span>
+                                    <h2 class="fw-bold text-warning">
+                                        ${{ product.price }}
+                                    </h2>
+                                </div>
+                                <div class="mt-4">
+                                    <a href="/shop"
+{#                                        href="/product/{{ product.id }}"#}
+                                        class="btn btn-warning btn-lg px-4"
+                                    >
+                                        Shop Now
+                                    </a>
+                                    <a
+                                        href="/products"
+                                        class="btn btn-outline-light btn-lg px-4 ms-2">
+                                        Explore
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- RIGHT -->
+                            <div class="col-lg-6 text-center">
+                                <img
+                                    src="{{ product.images[0] if product.images else 'https://placehold.co/800x600?text=VELORA' }}"
+                                    alt="{{ product.title }}"
+                                    class="hero-image rounded-4 shadow">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- prev -->
+                <button
+                    class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#heroSlider"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <!-- next -->
+                <button
+                    class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#heroSlider"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+<!-- SHOP BY CATEGORY -->
+<section class="py-5">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <p class="text-muted mb-2">EXPLORE VELORA</p>
+            <h2 class="section-title">Shop By Category</h2>
+        </div>
+
+        <div class="row g-4">
+
+            {% for category in categories %}
+            <div class="col-lg-3 col-md-6 col-6">
+
+                <div class="card border-0 shadow-sm h-100 product-card">
+
+                    {% if category.image %}
+                    <img
+                        src="{{ url_for('static', filename='uploads/categories/' + category.image) }}"
+                        class="category-image"
+                        alt="{{ category.name }}"
+                        loading="lazy"
+                        onerror="this.onerror=null; this.src='https://placehold.co/600x750?text=VELORA';"
+                    >
+                    {% else %}
+                    <img
+                        src="https://placehold.co/600x750?text=VELORA"
+                        class="category-image"
+                        alt="{{ category.name }}"
+                        loading="lazy"
+                    >
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column text-center">
+
+                        <h5 class="fw-bold category-name">
+                            {{ category.name }}
+                        </h5>
+
+                        <div class="mt-auto pt-3">
+                            <a
+                                href="{{ url_for('front.product_category', category_name=category.name) }}"
+                                class="btn btn-dark w-100">
+                                Explore
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <p class="text-muted">Categories will appear here.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+    <!-- VIRAL PRODUCTS -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <p class="text-muted mb-2">
+                    MOST TRENDING
+                </p>
+                <h2 class="section-title">
+                    Viral Products
+                </h2>
+            </div>
+            <div class="row">
+                {% for product in products[:8] %}
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100 product-card">
+                        <img
+                            src="{{ product.images[0] if product.images else 'https://placehold.co/800x600?text=VELORA' }}"
+                            class="card-img-top"
+                            alt="{{ product.title }}">
+                        <div class="card-body d-flex flex-column">
+                            <span class="badge bg-danger mb-2">
+                                Viral
+                            </span>
+                            <h5 class="fw-bold">
+                                {{ product.title[:40] }}
+                            </h5>
+                            <p class="text-muted small">
+                                {{ product.category.name }}
+                            </p>
+                            <h4 class="fw-bold text-dark">
+                                ${{ product.price }}
+                            </h4>
+                            <div class="mt-auto">
+                                <a
+                                    href="/product/{{ product.id }}"
+                                    class="btn btn-dark w-100">
+                                    View Product
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{% include 'front/front/share/footer.html' %}
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+</body>
+</html>

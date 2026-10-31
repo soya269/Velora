@@ -1,0 +1,105 @@
+/* ==========================
+   Dashboard
+========================== */
+
+.page-title {
+    margin-bottom: 30px;
+}
+
+.page-title h2 {
+    margin-bottom: 5px;
+    font-size: 36px;
+}
+
+.page-title p {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* ==========================
+   Dashboard Cards
+========================== */
+
+.card-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.dashboard-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card h5 {
+    margin: 0;
+    color: #6b7280;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.dashboard-card h2 {
+    margin-top: 10px;
+    font-size: 35px;
+    color: #111827;
+}
+
+.dashboard-card i {
+    font-size: 45px;
+    color: #2563eb;
+}
+
+/* ==========================
+   Dashboard Panel
+========================== */
+
+.dashboard-panel {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-panel h4 {
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+/* ==========================
+   Responsive
+========================== */
+
+@media (max-width: 1200px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        padding: 20px;
+    }
+
+    .dashboard-card h2 {
+        font-size: 28px;
+    }
+
+    .dashboard-card i {
+        font-size: 36px;
+    }
+}

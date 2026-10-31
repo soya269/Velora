@@ -1,0 +1,46 @@
+{% extends "front/admin/master.html" %}{% block title %}Orders | VELORA{% endblock %}{% block page_content %}
+    <div class="d-flex justify-content-between mb-4">
+        <div><h2>Orders</h2>
+            <p class="text-muted">Manage customer orders and status.</p></div>
+    </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for o in orders %}
+                    <tr>
+                        <td>#{{ o.id }}</td>
+                        <td>{{ o.customer_name }}</td>
+                        <td>{{ o.phone }}</td>
+                        <td>${{ "%.2f"|format(o.total) }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('admin.update_order_status',id=o.id) }}"><input
+                                    type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="status"
+                                                                                                       class="form-select form-select-sm"
+                                                                                                       onchange="this.form.submit()">
+                                {% for s in ['Pending','Processing','Shipped','Completed','Cancelled'] %}
+                                    <option {{ 'selected' if o.status==s }}>{{ s }}</option>{% endfor %}</select></form>
+                        </td>
+                        <td>{{ o.created_at or '' }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="5" class="small text-muted">{{ o.address }} · {{ o.items|length }} item(s)</td>
+                    </tr>{% else %}
+                    <tr>
+                        <td colspan="6" class="text-center p-4">No orders found.</td>
+                    </tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>{% endblock %}

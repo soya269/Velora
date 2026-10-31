@@ -1,0 +1,12 @@
+<aside class="sidebar">
+<div class="logo"><h2>VELORA</h2><small>Admin Panel</small></div>
+<ul class="menu">
+<li><a href="{{ url_for('admin.admin_dashboard') }}"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></a></li>
+<li><a href="{{ url_for('admin.admin_users') }}"><i class="fa-solid fa-users"></i><span>Users</span></a></li>
+<li><a href="{{ url_for('admin.admin_products') }}"><i class="fa-solid fa-shirt"></i><span>Products</span></a></li>
+<li><a href="{{ url_for('admin.admin_orders') }}"><i class="fa-solid fa-cart-shopping"></i><span>Orders</span></a></li>
+<li><a href="{{ url_for('admin.admin_categories') }}"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a></li>
+
+</ul>
+<div class="sidebar-footer"><a href="{{ url_for('front.logout') }}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a></div>
+</aside>

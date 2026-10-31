@@ -1,0 +1,112 @@
+{#<!doctype html>#}
+{#<html>#}
+{#<head>#}
+{#    <meta charset="utf-8">#}
+{#    <meta name="viewport" content="width=device-width,initial-scale=1">#}
+{#    <title>VELORA Admin Login</title>#}
+{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">#}
+{#    <style>body {#}
+{#        min-height: 100vh;#}
+{#        display: grid;#}
+{#        place-items: center;#}
+{#        background: #111#}
+{#    }#}
+{##}
+{#    .card {#}
+{#        width: min(420px, 92vw)#}
+{#    }</style>#}
+{#</head>#}
+{#<body>#}
+{#<div class="card shadow-lg">#}
+{#    <div class="card-body p-4"><h2 class="text-center mb-1">VELORA</h2>#}
+{#        <p class="text-center text-muted">Administrator Login</p>#}
+{#        {% with messages=get_flashed_messages(with_categories=true) %}{% for c,m in messages %}#}
+{#            <div class="alert alert-{{ c }}">{{ m }}</div>{% endfor %}{% endwith %}#}
+{##}
+{#    <form method="POST" action=" {{ url_for('admin.admin_login') }}">#}
+{#    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">#}
+{#            <input class="form-control mb-3" name="username" placeholder="Username or email" required>#}
+{##}
+{#            <input class="form-control mb-3" type="password" name="password" placeholder="Password" required>#}
+{##}
+{#            <button class="btn btn-dark w-100">Login</button>#}
+{#        </form>#}
+{#        <a class="d-block text-center mt-3" href="{{ url_for('front.home') }}">Back to store</a></div>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>VELORA Admin Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #111;
+        }
+
+        .card {
+            width: min(420px, 92vw);
+        }
+    </style>
+</head>
+<body>
+<div class="card shadow-lg">
+    <div class="card-body p-4">
+        <h2 class="text-center mb-1">VELORA</h2>
+        <p class="text-center text-muted">Administrator Login</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for c, m in messages %}
+                    <div class="alert alert-{{ c if c != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                        {{ m }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('admin.admin_login') }}">
+            <input type="hidden" name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div class="mb-3">
+                <input
+                    class="form-control"
+                    type="text"
+                    name="username"
+                    placeholder="Username or email"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <div class="mb-3">
+                <input
+                    class="form-control"
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100 py-2">Login</button>
+        </form>
+
+        <a class="d-block text-center text-decoration-none mt-3" href="{{ url_for('front.home') }}">
+            ← Back to store
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

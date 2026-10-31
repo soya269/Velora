@@ -1,0 +1,354 @@
+{% extends "front/admin/master.html" %}
+
+{% block title %}Categories{% endblock %}
+
+{% block page_content %}
+
+<style>
+    .category-container {
+        width: 95%;
+        max-width: 1200px;
+        margin: 30px auto;
+    }
+
+    .category-header {
+        margin-bottom: 25px;
+    }
+
+    .category-header h2 {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .category-header p {
+        margin-bottom: 0;
+    }
+
+    .category-card {
+        background: #ffffff;
+        border: 0;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .category-card-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid #eeeeee;
+        background: #ffffff;
+    }
+
+    .category-table {
+        margin-bottom: 0;
+    }
+
+    .category-table thead th {
+        background: #212529;
+        color: #ffffff;
+        font-weight: 500;
+        padding: 14px 15px;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .category-table tbody td {
+        padding: 14px 15px;
+        vertical-align: middle;
+    }
+
+    .category-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .category-image {
+        width: 55px;
+        height: 55px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #eeeeee;
+    }
+
+    .no-image {
+        width: 55px;
+        height: 55px;
+        border-radius: 8px;
+        background: #f1f3f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 12px;
+    }
+
+    .category-name {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .category-description {
+        max-width: 350px;
+        color: #6c757d;
+    }
+
+    .action-buttons {
+        white-space: nowrap;
+    }
+
+    .action-buttons .btn {
+        min-width: 65px;
+    }
+
+    .empty-category {
+        padding: 50px 20px !important;
+        color: #6c757d;
+    }
+
+    @media (max-width: 768px) {
+
+        .category-container {
+            width: 100%;
+            margin: 20px auto;
+        }
+
+        .category-header {
+            display: block !important;
+        }
+
+        .category-header .btn {
+            margin-top: 15px;
+        }
+
+        .category-card-header {
+            padding: 15px;
+        }
+
+        .category-table thead th,
+        .category-table tbody td {
+            padding: 10px;
+        }
+    }
+</style>
+
+
+<div class="category-container">
+
+    <!-- Page Header -->
+    <div class="category-header d-flex justify-content-between align-items-center">
+
+        <div>
+            <h2>Categories</h2>
+
+            <p class="text-muted">
+                Manage product categories.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('admin.create_category') }}"
+            class="btn btn-primary"
+        >
+            <i class="fa-solid fa-plus me-1"></i>
+            Add Category
+        </a>
+
+    </div>
+
+
+    <!-- Category Card -->
+    <div class="category-card">
+
+        <!-- Card Header -->
+        <div class="category-card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+                    All Categories
+                </h5>
+
+                <span class="text-muted small">
+                    {{ categories|length }} categories
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Table -->
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle category-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Image</th>
+
+                        <th>Name</th>
+
+                        <th>Description</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for c in categories %}
+
+                    <tr>
+
+                        <!-- ID -->
+                        <td>
+                            <strong>#{{ c.id }}</strong>
+                        </td>
+
+
+                        <!-- Image -->
+                        <td>
+
+                            {% if c.image %}
+
+                                <img
+                                    src="{{ url_for(
+                                        'static',
+                                        filename='uploads/categories/' ~ c.image
+                                    ) }}"
+                                    alt="{{ c.name }}"
+                                    class="category-image"
+                                >
+
+                            {% else %}
+
+                                <div class="no-image">
+                                    No image
+                                </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Name -->
+                        <td>
+
+                            <span class="category-name">
+                                {{ c.name }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Description -->
+                        <td>
+
+                            <div class="category-description">
+
+                                {% if c.description %}
+
+                                    {{ c.description }}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        No description
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Actions -->
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <!-- Edit -->
+                                <a
+                                    href="{{ url_for(
+                                        'admin.edit_category',
+                                        id=c.id
+                                    ) }}"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    <i class="fa-solid fa-pen-to-square me-1"></i>
+                                    Edit
+                                </a>
+
+
+                                <!-- Delete -->
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'admin.delete_category',
+                                        id=c.id
+                                    ) }}"
+                                    class="d-inline"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Delete this category?')"
+                                    >
+                                        <i class="fa-solid fa-trash me-1"></i>
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="text-center empty-category"
+                        >
+
+                            <i class="fa-solid fa-folder-open fa-2x mb-3"></i>
+
+                            <div>
+                                No categories found.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

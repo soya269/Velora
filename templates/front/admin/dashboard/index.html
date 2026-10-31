@@ -1,0 +1,13 @@
+{% extends "front/admin/master.html" %}
+{% block title %}Dashboard | VELORA{% endblock %}
+{% block page_content %}
+<div class="mb-4"><h2>Dashboard Overview</h2><p class="text-muted">Live summary from the VELORA database.</p></div>
+<div class="row g-3 mb-4">
+{% for label,value,icon in [('Products',total_products,'fa-box'),('Categories',total_categories,'fa-layer-group'),('Brands',total_brands,'fa-tags'),('Registered Users',total_users,'fa-users'),('Orders',total_orders,'fa-cart-shopping')] %}
+<div class="col-sm-6 col-xl"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">{{ label }}</div><div class="d-flex justify-content-between align-items-center"><h2 class="mb-0">{{ value }}</h2><i class="fa-solid {{ icon }} fa-2x text-secondary"></i></div></div></div></div>
+{% endfor %}
+</div>
+<div class="card shadow-sm"><div class="card-body"><h5>Recent Orders</h5><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>
+{% for o in recent_orders %}<tr><td>{{ o.order_ref or ('#' ~ o.id) }}</td><td>{{ o.customer_name }}</td><td>${{ '%.2f'|format(o.total) }}</td><td><span class="badge bg-secondary">{{ o.status }}</span></td><td>{{ o.created_at or '' }}</td></tr>{% else %}<tr><td colspan="5" class="text-center text-muted">No orders yet.</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+{% endblock %}

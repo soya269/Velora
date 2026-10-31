@@ -1,0 +1,24 @@
+{% extends "front/admin/master.html" %}
+{% block title %}Add Product | VELORA{% endblock %}
+{% block page_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div><h2>Add Product</h2><p class="text-muted mb-0">Manage product details, pricing and images.</p></div>
+  <a class="btn btn-outline-secondary" href="{{ url_for('admin.admin_products') }}">Back</a>
+</div>
+<div class="card shadow-sm"><div class="card-body">
+<form method="POST" enctype="multipart/form-data">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="row g-3">
+ <div class="col-md-6"><label class="form-label">Product name *</label><input class="form-control" name="name" required value="{{ request.form.get('name','') }}"></div>
+ <div class="col-md-3"><label class="form-label">Category *</label><select class="form-select" name="category_id" required><option value="">Choose category</option>{% for c in categories %}<option value="{{ c.id }}" {% if (product and product.category_id == c.id) or request.form.get('category_id') == c.id|string %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+ <div class="col-md-3"><label class="form-label">Brand</label><select class="form-select" name="brand_id"><option value="">No brand</option>{% for b in brands %}<option value="{{ b.id }}" {% if (product and product.brand_id == b.id) or request.form.get('brand_id') == b.id|string %}selected{% endif %}>{{ b.name }}</option>{% endfor %}</select></div>
+ <div class="col-md-4"><label class="form-label">Cost ($) *</label><input class="form-control" type="number" min="0" step="0.01" name="cost" required value="{{ request.form.get('cost','0') }}"></div>
+ <div class="col-md-4"><label class="form-label">Price ($) *</label><input class="form-control" type="number" min="0" step="0.01" name="price" required value="{{ request.form.get('price','0') }}"></div>
+ <div class="col-md-4"><label class="form-label">Stock *</label><input class="form-control" type="number" min="0" name="stock" required value="{{ request.form.get('stock','0') }}"></div><div class="col-md-4"><label class="form-label">Rating (0–5)</label><input class="form-control" type="number" min="0" max="5" step="0.1" name="rating" value="{{ product.rating if product else request.form.get('rating','0') }}"></div>
+ <div class="col-md-6"><label class="form-label">Main thumbnail</label><input class="form-control" type="file" name="thumbnail" accept="image/*"></div>
+ <div class="col-md-6"><label class="form-label">Additional images</label><input class="form-control" type="file" name="images" accept="image/*" multiple></div>
+ <div class="col-12"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="4">{{ request.form.get('description','') }}</textarea></div>
+</div>
+<div class="mt-4"><button class="btn btn-primary" type="submit">Save Product</button><a class="btn btn-light ms-2" href="{{ url_for('admin.admin_products') }}">Cancel</a></div>
+</form></div></div>
+{% endblock %}
