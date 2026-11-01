@@ -1,506 +1,189 @@
-{#<nav class="navbar-custom">#}
-{##}
-{#    <!-- Menu Button -->#}
-{#    <button id="menuToggle" class="menu-btn">#}
-{#        <i class="fa-solid fa-bars"></i>#}
-{#    </button>#}
-{##}
-{#    <!-- Search Box -->#}
-{#    <div class="search-box">#}
-{#        <i class="fa-solid fa-search"></i>#}
-{##}
-{#        <input#}
-{#                type="text"#}
-{#                id="search"#}
-{#                name="search"#}
-{#                placeholder="Search..."#}
-{#                autocomplete="off">#}
-{#    </div>#}
-{##}
-{#    <!-- Right Side -->#}
-{#    <div class="navbar-right">#}
-{##}
-{#        <!-- Notification -->#}
-{#        <a href="#" class="nav-icon">#}
-{#            <i class="fa-regular fa-bell"></i>#}
-{#        </a>#}
-{##}
-{#        <!-- Messages -->#}
-{#        <a href="#" class="nav-icon">#}
-{#            <i class="fa-regular fa-envelope"></i>#}
-{#        </a>#}
-{##}
-{#        <!-- User Profile -->#}
-{#        <div class="user-profile">#}
-{##}
-{#            <div class="avatar">#}
-{#                {% if session.get('user') %}#}
-{#                    {% set user = session.get('user') %}#}
-{##}
-{#                    <div class="user-profile">#}
-{#                        {% if user.get('name') %}#}
-{#                            {{ user.get('name')[0]|upper }}#}
-{#                        {% elif user.get('username') %}#}
-{#                            {{ user.get('username')[0]|upper }}#}
-{#                        {% else %}#}
-{#                            U#}
-{#                        {% endif %}#}
-{#                    </div>#}
-{#                {% else %}#}
-{#                    <div class="user-profile">#}
-{#                        G#}
-{#                    </div>#}
-{#                {% endif %}#}
-                {#                {% set current_user = session.get('user', {}) %}#}
-                {##}
-                {#                {% if current_user.get('name') %}#}
-                {#                    {{ current_user.get('name')[0]|upper }}#}
-                {#                {% elif current_user.get('username') %}#}
-                {#                    {{ current_user.get('username')[0]|upper }}#}
-                {#                {% else %}#}
-                {#                    A#}
-                {#                {% endif %}#}
-{#            </div>#}
-{##}
-{#            <div class="user-info">#}
-{#                {{ session.get('user', {}).get('name', session.get('user', {}).get('username', 'Admin')) }}#}
-{#            </div>#}
-{##}
-{#        </div>#}
-{##}
-{#    </div>#}
-{##}
-{#</nav>#}
-{##}
-{#<nav class="navbar-custom">#}
-{##}
-{#    <!-- ==========================================#}
-{#         MENU BUTTON#}
-{#    ========================================== -->#}
-{#    <button#}
-{#        type="button"#}
-{#        id="menuToggle"#}
-{#        class="menu-btn"#}
-{#    >#}
-{#        <i class="fa-solid fa-bars"></i>#}
-{#    </button>#}
-{##}
-{##}
-{#    <!-- ==========================================#}
-{#         SEARCH BOX#}
-{#    ========================================== -->#}
-{#    <div class="search-box">#}
-{##}
-{#        <i class="fa-solid fa-search"></i>#}
-{##}
-{#        <input#}
-{#            type="text"#}
-{#            id="search"#}
-{#            name="search"#}
-{#            placeholder="Search..."#}
-{#            autocomplete="off"#}
-{#        >#}
-{##}
-{#    </div>#}
-{##}
-{##}
-{#    <!-- ==========================================#}
-{#         RIGHT SIDE#}
-{#    ========================================== -->#}
-{#    <div class="navbar-right">#}
-{##}
-{##}
-{#        <!-- ======================================#}
-{#             NOTIFICATION#}
-{#        ======================================= -->#}
-{#        <a#}
-{#            href="#"#}
-{#            class="nav-icon"#}
-{#            title="Notifications"#}
-{#        >#}
-{#            <i class="fa-regular fa-bell"></i>#}
-{#        </a>#}
-{##}
-{##}
-{#        <!-- ======================================#}
-{#             MESSAGES#}
-{#        ======================================= -->#}
-{#        <a#}
-{#            href="#"#}
-{#            class="nav-icon"#}
-{#            title="Messages"#}
-{#        >#}
-{#            <i class="fa-regular fa-envelope"></i>#}
-{#        </a>#}
-{##}
-{##}
-{#        <!-- ======================================#}
-{#             USER PROFILE#}
-{#        ======================================= -->#}
-{##}
-{#        {% set current_user = session.get('user', {}) %}#}
-{##}
-{#        {% if current_user %}#}
-{##}
-{#            {% if current_user.get('name') %}#}
-{##}
-{#                {% set display_name = current_user.get('name') %}#}
-{##}
-{#            {% elif current_user.get('username') %}#}
-{##}
-{#                {% set display_name = current_user.get('username') %}#}
-{##}
-{#            {% elif current_user.get('first_name') %}#}
-{##}
-{#                {% set display_name = current_user.get('first_name') %}#}
-{##}
-{#            {% else %}#}
-{##}
-{#                {% set display_name = 'Admin' %}#}
-{##}
-{#            {% endif %}#}
-{##}
-{#        {% else %}#}
-{##}
-{#            {% set display_name = 'Admin' %}#}
-{##}
-{#        {% endif %}#}
-{##}
-{##}
-{#        <div class="user-profile">#}
-{##}
-{##}
-{#            <!-- ==================================#}
-{#                 AVATAR#}
-{#            =================================== -->#}
-{##}
-{#            <div class="avatar">#}
-{##}
-{#                {{ display_name[0]|upper }}#}
-{##}
-{#            </div>#}
-{##}
-{##}
-{#            <!-- ==================================#}
-{#                 USER NAME#}
-{#            =================================== -->#}
-{##}
-{#            <div class="user-info">#}
-{##}
-{#                {{ display_name }}#}
-{##}
-{#            </div>#}
-{##}
-{##}
-{#        </div>#}
-{##}
-{#    </div>#}
-{##}
-{#</nav>#}
+
+{% set current_user = session.get('user', {}) %}
+{% set profile_image = current_user.get('image') or current_user.get('profile') %}
+{% set admin_name = current_user.get('name') or current_user.get('username') or 'Administrator' %}
+{% set admin_initial = admin_name[0]|upper %}
 
 <nav class="navbar-custom">
 
-    <!-- MENU -->
-    <button
-        type="button"
-        id="menuToggle"
-        class="menu-btn"
-    >
-        <i class="fa-solid fa-bars"></i>
-    </button>
+    <!-- LEFT SECTION -->
+    <div class="navbar-left">
 
+        <button type="button" id="menuToggle" class="menu-btn"
+                aria-label="Toggle sidebar">
+            <i class="fa-solid fa-bars"></i>
+        </button>
 
-    <!-- SEARCH -->
-    <div class="search-box">
-
-        <i class="fa-solid fa-search"></i>
-
-        <input
-            type="text"
-            id="search"
-            placeholder="Search..."
-            autocomplete="off"
-        >
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+                type="text"
+                id="search"
+                placeholder="Search..."
+                autocomplete="off"
+            >
+        </div>
 
     </div>
 
-
-    <!-- RIGHT -->
+    <!-- RIGHT SECTION -->
     <div class="navbar-right">
 
         <!-- NOTIFICATION -->
-        <a
-            href="#"
-            class="nav-icon"
-            title="Notifications"
-        >
+        <a href="#"
+           class="nav-icon"
+           title="Notifications"
+           aria-label="Notifications">
             <i class="fa-regular fa-bell"></i>
+            <span class="notification-dot"></span>
         </a>
-
-
-        <!-- CURRENT USER -->
-        {% set current_user = session.get('user', {}) %}
-
-        {% set profile_image =
-            current_user.get('image')
-            or current_user.get('profile')
-        %}
-
 
         <!-- USER DROPDOWN -->
         <div class="dropdown">
 
-            <a
-                href="#"
+            <button
+                type="button"
                 class="admin-navbar-user dropdown-toggle"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
             >
 
                 <!-- PROFILE IMAGE -->
-
                 {% if profile_image %}
 
                     <img
                         src="{{ url_for('static', filename=profile_image) }}"
-                        alt="Profile"
+                        alt="Admin profile"
                         class="navbar-avatar"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                     >
 
-                    <div
-                        class="navbar-avatar navbar-letter-avatar"
-                        style="display:none;"
-                    >
-                        {{
-                            (
-                                current_user.get('name')
-                                or current_user.get('username')
-                                or 'A'
-                            )[0]|upper
-                        }}
+                    <div class="navbar-avatar navbar-letter-avatar"
+                         style="display:none;">
+                        {{ admin_initial }}
                     </div>
 
                 {% else %}
 
                     <div class="navbar-avatar navbar-letter-avatar">
-
-                        {{
-                            (
-                                current_user.get('name')
-                                or current_user.get('username')
-                                or 'A'
-                            )[0]|upper
-                        }}
-
+                        {{ admin_initial }}
                     </div>
 
                 {% endif %}
 
-
-                <!-- NAME -->
+                <!-- USER INFORMATION -->
                 <div class="navbar-user-info">
-
-                    <div class="navbar-user-name">
-
-                        {{
-                            current_user.get(
-                                'name',
-                                current_user.get(
-                                    'username',
-                                    'Administrator'
-                                )
-                            )
-                        }}
-
-                    </div>
+                    <span class="navbar-user-name">
+                        {{ admin_name }}
+                    </span>
 
                     <small>
-                        Administrator
+                        {{ current_user.get('role', 'admin')|capitalize }}
                     </small>
-
                 </div>
 
-            </a>
+                <i class="fa-solid fa-chevron-down user-chevron"></i>
 
+            </button>
 
-            <!-- DROPDOWN -->
+            <!-- DROPDOWN MENU -->
             <ul class="dropdown-menu dropdown-menu-end admin-profile-dropdown">
 
                 <!-- PROFILE HEADER -->
                 <li>
-
                     <div class="dropdown-profile-header">
 
                         {% if profile_image %}
 
                             <img
                                 src="{{ url_for('static', filename=profile_image) }}"
-                                alt="Profile"
+                                alt="Admin profile"
                                 class="dropdown-avatar"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                             >
+
+                            <div class="dropdown-avatar dropdown-letter-avatar"
+                                 style="display:none;">
+                                {{ admin_initial }}
+                            </div>
 
                         {% else %}
 
                             <div class="dropdown-avatar dropdown-letter-avatar">
-
-                                {{
-                                    (
-                                        current_user.get('name')
-                                        or current_user.get('username')
-                                        or 'A'
-                                    )[0]|upper
-                                }}
-
+                                {{ admin_initial }}
                             </div>
 
                         {% endif %}
 
-
-                        <div>
-
-                            <strong>
-
-                                {{
-                                    current_user.get(
-                                        'name',
-                                        current_user.get(
-                                            'username',
-                                            'Administrator'
-                                        )
-                                    )
-                                }}
-
-                            </strong>
-
+                        <div class="dropdown-user-info">
+                            <strong>{{ admin_name }}</strong>
                             <span>
-                                Administrator
+                                {{ current_user.get('role', 'admin')|capitalize }}
                             </span>
-
                         </div>
 
                     </div>
-
                 </li>
 
-
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-
+                <li><hr class="dropdown-divider"></li>
 
                 <!-- USERNAME -->
                 <li>
-
                     <div class="profile-detail">
-
                         <i class="fa-solid fa-at"></i>
-
                         <div>
-
-                            <small>
-                                Username
-                            </small>
-
+                            <small>Username</small>
                             <strong>
                                 {{ current_user.get('username', 'admin') }}
                             </strong>
-
                         </div>
-
                     </div>
-
                 </li>
-
 
                 <!-- EMAIL -->
                 {% if current_user.get('email') %}
-
                     <li>
-
                         <div class="profile-detail">
-
-                            <i class="fa-solid fa-envelope"></i>
-
+                            <i class="fa-regular fa-envelope"></i>
                             <div>
-
-                                <small>
-                                    Email
-                                </small>
-
-                                <strong>
-                                    {{ current_user.get('email') }}
-                                </strong>
-
+                                <small>Email Address</small>
+                                <strong>{{ current_user.get('email') }}</strong>
                             </div>
-
                         </div>
-
                     </li>
-
                 {% endif %}
-
 
                 <!-- ROLE -->
                 <li>
-
                     <div class="profile-detail">
-
                         <i class="fa-solid fa-shield-halved"></i>
-
                         <div>
-
-                            <small>
-                                Role
-                            </small>
-
+                            <small>Account Role</small>
                             <strong>
-                                {{ current_user.get('role', 'Admin') }}
+                                {{ current_user.get('role', 'admin')|capitalize }}
                             </strong>
-
                         </div>
-
                     </div>
-
                 </li>
 
-
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-
+                <li><hr class="dropdown-divider"></li>
 
                 <!-- PROFILE -->
                 <li>
-
-                    <a
-                        class="dropdown-item"
-                        href="{{ url_for('admin.admin_profile') }}"
-                    >
-
-                        <i class="fa-solid fa-user me-2"></i>
-
-                        Admin Profile
-
+                    <a class="dropdown-item"
+                       href="{{ url_for('admin.admin_profile') }}">
+                        <i class="fa-regular fa-user"></i>
+                        <span>Admin Profile</span>
                     </a>
-
                 </li>
-
 
                 <!-- LOGOUT -->
                 <li>
-
-                    <a
-                        class="dropdown-item text-danger"
-                        href="{{ url_for('front.logout') }}"
-                    >
-
-                        <i class="fa-solid fa-right-from-bracket me-2"></i>
-
-                        Logout
-
+                    <a class="dropdown-item logout-item"
+                       href="{{ url_for('front.logout') }}">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
                     </a>
-
                 </li>
 
             </ul>
@@ -511,303 +194,430 @@
 
 </nav>
 
-
 <style>
 
 /* =========================================
-   NAVBAR USER
+   VELORA ADMIN NAVBAR
 ========================================= */
 
-.admin-navbar-user {
-
+.navbar-custom {
+    min-height: 78px;
+    width: 100%;
     display: flex;
-
     align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 30px;
+    background: #ffffff;
+    border-bottom: 1px solid #eae7e2;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    z-index: 100;
+}
 
-    gap: 11px;
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
 
-    text-decoration: none;
+/* =========================================
+   MENU BUTTON
+========================================= */
 
-    color: inherit;
-
-    padding: 4px 6px;
-
-    border-radius: 10px;
-
+.menu-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eae7e2;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #38342f;
+    font-size: 16px;
+    cursor: pointer;
     transition: 0.2s ease;
 }
 
-.admin-navbar-user:hover {
-
-    background: #f5f7fb;
-
+.menu-btn:hover {
+    background: #f5f3ef;
+    color: #857763;
+    border-color: #d6cec2;
 }
 
+/* =========================================
+   SEARCH BOX
+========================================= */
+
+.search-box {
+    width: 260px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 13px;
+    background: #f8f7f5;
+    border: 1px solid #eae7e2;
+    border-radius: 3px;
+    transition: 0.2s ease;
+}
+
+.search-box:focus-within {
+    background: #ffffff;
+    border-color: #857763;
+}
+
+.search-box i {
+    color: #89847d;
+    font-size: 14px;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #38342f;
+    font-size: 13px;
+}
+
+.search-box input::placeholder {
+    color: #aaa49b;
+}
 
 /* =========================================
-   NAVBAR AVATAR
+   RIGHT SECTION
+========================================= */
+
+.navbar-right {
+    gap: 20px;
+}
+
+/* =========================================
+   NOTIFICATION
+========================================= */
+
+.nav-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #777168;
+    font-size: 18px;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: 0.2s ease;
+}
+
+.nav-icon:hover {
+    background: #f5f3ef;
+    color: #857763;
+}
+
+.notification-dot {
+    width: 7px;
+    height: 7px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #b94a48;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+}
+
+/* =========================================
+   USER DROPDOWN BUTTON
+========================================= */
+
+.admin-navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 5px 8px;
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: #292723;
+    text-align: left;
+    transition: 0.2s ease;
+}
+
+.admin-navbar-user:hover,
+.admin-navbar-user:focus {
+    background: #f5f3ef;
+    color: #292723;
+}
+
+.admin-navbar-user::after {
+    display: none;
+}
+
+.user-chevron {
+    margin-left: 3px;
+    color: #a39a8d;
+    font-size: 10px;
+}
+
+/* =========================================
+   AVATAR
 ========================================= */
 
 .navbar-avatar {
-
-    width: 48px;
-
-    height: 48px;
-
-    min-width: 48px;
-
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+    border: 1px solid #e5ded3;
     border-radius: 50%;
-
     object-fit: cover;
-
-    border: 2px solid #e9edf5;
-
-    background: #ffffff;
+    background: #f5f3ef;
 }
 
-
-/* =========================================
-   LETTER AVATAR
-========================================= */
-
 .navbar-letter-avatar {
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
-    background: #1769ff;
-
-    color: white;
-
-    font-size: 19px;
-
+    background: #857763;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
     font-weight: 600;
 }
 
-
 /* =========================================
-   USER INFO
+   USER INFORMATION
 ========================================= */
 
 .navbar-user-info {
-
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
     line-height: 1.2;
 }
 
 .navbar-user-name {
-
-    color: #1769ff;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
+    color: #292723;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .navbar-user-info small {
-
-    display: block;
-
-    color: #6c757d;
-
-    font-size: 12px;
-
-    margin-top: 3px;
+    color: #89847d;
+    font-size: 11px;
 }
-
 
 /* =========================================
    DROPDOWN
 ========================================= */
 
 .admin-profile-dropdown {
-
-    width: 320px;
-
-    border: none;
-
-    border-radius: 14px;
-
-    padding: 8px 0;
-
-    box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.12);
+    width: 310px;
+    margin-top: 12px !important;
+    padding: 9px 0;
+    border: 1px solid #eae7e2;
+    border-radius: 4px;
+    background: #ffffff;
+    box-shadow: 0 12px 35px rgba(41, 39, 35, 0.10);
 }
 
-
 /* =========================================
-   DROPDOWN HEADER
+   DROPDOWN PROFILE HEADER
 ========================================= */
 
 .dropdown-profile-header {
-
     display: flex;
-
     align-items: center;
-
-    gap: 12px;
-
-    padding: 12px 16px;
+    gap: 13px;
+    padding: 13px 17px;
 }
-
 
 .dropdown-avatar {
-
-    width: 55px;
-
-    height: 55px;
-
-    min-width: 55px;
-
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border: 1px solid #e5ded3;
     border-radius: 50%;
-
     object-fit: cover;
-
-    border: 2px solid #e9edf5;
+    background: #f5f3ef;
 }
 
-
 .dropdown-letter-avatar {
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
-    background: #1769ff;
-
-    color: white;
-
+    background: #857763;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
     font-size: 22px;
-
     font-weight: 600;
 }
 
-
-.dropdown-profile-header strong {
-
-    display: block;
-
-    font-size: 15px;
-
-    color: #212529;
+.dropdown-user-info {
+    min-width: 0;
 }
 
-
-.dropdown-profile-header span {
-
+.dropdown-user-info strong {
     display: block;
-
-    margin-top: 3px;
-
-    font-size: 12px;
-
-    color: #6c757d;
+    overflow: hidden;
+    color: #292723;
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+.dropdown-user-info span {
+    display: block;
+    margin-top: 4px;
+    color: #89847d;
+    font-size: 11px;
+    text-transform: capitalize;
+}
 
 /* =========================================
    PROFILE DETAILS
 ========================================= */
 
 .profile-detail {
-
     display: flex;
-
     align-items: center;
-
-    gap: 12px;
-
-    padding: 8px 16px;
+    gap: 13px;
+    padding: 8px 18px;
 }
 
-
 .profile-detail > i {
-
-    width: 20px;
-
-    color: #6c757d;
-
+    width: 17px;
+    color: #857763;
+    font-size: 13px;
     text-align: center;
 }
 
-
 .profile-detail small {
-
     display: block;
-
-    color: #8a93a2;
-
-    font-size: 11px;
+    margin-bottom: 2px;
+    color: #a39a8d;
+    font-size: 10px;
 }
-
 
 .profile-detail strong {
-
     display: block;
-
-    color: #212529;
-
-    font-size: 13px;
-
+    max-width: 240px;
+    overflow-wrap: anywhere;
+    color: #38342f;
+    font-size: 12px;
     font-weight: 500;
-
-    word-break: break-word;
 }
-
 
 /* =========================================
    DROPDOWN ITEMS
 ========================================= */
 
-.admin-profile-dropdown .dropdown-item {
-
-    padding: 10px 16px;
-
-    font-size: 14px;
-
-    border-radius: 7px;
-
-    margin: 2px 8px;
-
-    width: calc(100% - 16px);
+.admin-profile-dropdown .dropdown-divider {
+    margin: 8px 0;
+    border-color: #eae7e2;
 }
 
+.admin-profile-dropdown .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: calc(100% - 16px);
+    margin: 2px 8px;
+    padding: 11px 13px;
+    border-radius: 3px;
+    color: #38342f;
+    font-size: 12px;
+    transition: 0.2s ease;
+}
+
+.admin-profile-dropdown .dropdown-item i {
+    width: 16px;
+    color: #857763;
+    text-align: center;
+}
 
 .admin-profile-dropdown .dropdown-item:hover {
+    background: #f5f3ef;
+    color: #292723;
+}
 
-    background: #f5f7fb;
+.admin-profile-dropdown .dropdown-item.logout-item,
+.admin-profile-dropdown .dropdown-item.logout-item i {
+    color: #b94a48;
+}
+
+.admin-profile-dropdown .dropdown-item.logout-item:hover {
+    background: #fbf1f0;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .navbar-custom {
+        min-height: 68px;
+        padding: 10px 15px;
+        gap: 10px;
+    }
+
+    .navbar-left,
+    .navbar-right {
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 190px;
+    }
+
+    .navbar-user-info,
+    .user-chevron {
+        display: none;
+    }
+
+    .admin-navbar-user {
+        padding: 3px;
+    }
+
+    .navbar-avatar {
+        width: 39px;
+        height: 39px;
+        min-width: 39px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .search-box {
+        width: 145px;
+        height: 38px;
+    }
+
+    .search-box input {
+        font-size: 11px;
+    }
+
+    .navbar-right {
+        gap: 5px;
+    }
+
+    .nav-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    .admin-profile-dropdown {
+        width: min(310px, calc(100vw - 20px));
+    }
 }
 
 </style>
-
-{#<nav class="navbar-custom">#}
-{#    <button type="button" id="menuToggle" class="menu-btn"><i class="fa-solid fa-bars"></i></button>#}
-{#    <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="search" placeholder="Search..."#}
-{#                                                                     autocomplete="off"></div>#}
-{#    <div class="navbar-right">#}
-{#        <a href="#" class="nav-icon"><i class="fa-regular fa-bell"></i></a>#}
-{#        {% set current_user=session.get('user', {}) %}#}
-{#        <div class="dropdown">#}
-{#            <a href="#" class="d-flex align-items-center gap-2 text-decoration-none dropdown-toggle"#}
-{#               data-bs-toggle="dropdown">#}
-{#                <div class="avatar">{{ (current_user.get('name') or current_user.get('username') or 'A')[0]|upper }}</div>#}
-{#                <div class="user-info">{{ current_user.get('name', current_user.get('username','Admin')) }}<small#}
-{#                        class="d-block text-muted">Admin</small></div>#}
-{#            </a>#}
-{#            <ul class="dropdown-menu dropdown-menu-end">#}
-{#                <li><a class="dropdown-item" href="{{ url_for('admin.admin_profile') }}"><i#}
-{#                        class="fa-solid fa-user me-2"></i>Admin Profile</a></li>#}
-{#                <li><a class="dropdown-item" href="{{ url_for('front.login') }}"><i#}
-{#                        class="fa-solid fa-right-to-bracket me-2"></i>Login</a></li>#}
-{#                <li><a class="dropdown-item" href="{{ url_for('front.logout') }}"><i#}
-{#                        class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>#}
-{#            </ul>#}
-{#        </div>#}
-{#    </div>#}
-{#</nav>#}

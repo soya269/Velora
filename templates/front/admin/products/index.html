@@ -1,9 +1,856 @@
+
 {% extends "front/admin/master.html" %}
+
 {% block title %}Products | VELORA{% endblock %}
+
 {% block page_content %}
-<div class="d-flex justify-content-between align-items-center mb-4"><div><h2>Products</h2><p class="text-muted mb-0">Database-backed product inventory.</p></div><a class="btn btn-primary" href="{{ url_for('admin.create_product') }}">+ Add Product</a></div>
-<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
-<thead class="table-dark"><tr><th>ID</th><th>Image</th><th>Name</th><th>Category</th><th>Brand</th><th>Cost</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
-<tbody>{% for p in products %}<tr><td>{{ p.id }}</td><td>{% if p.thumbnail %}<img src="{% if p.thumbnail.startswith('http') %}{{ p.thumbnail }}{% else %}{{ url_for('static',filename='uploads/products/'+p.thumbnail) }}{% endif %}" style="width:55px;height:55px;object-fit:cover;border-radius:8px">{% else %}<span class="text-muted">No image</span>{% endif %}</td><td>{{ p.name }}</td><td>{{ p.category.name if p.category else '-' }}</td><td>{{ p.brand.name if p.brand else '-' }}</td><td>${{ '%.2f'|format(p.cost|float) }}</td><td>${{ '%.2f'|format(p.price|float) }}</td><td><span class="badge {{ 'bg-success' if p.stock > 0 else 'bg-danger' }}">{{ p.stock }}</span></td><td class="text-nowrap"><a class="btn btn-sm btn-warning" href="{{ url_for('admin.edit_product',id=p.id) }}">Edit</a><form class="d-inline" method="POST" action="{{ url_for('admin.delete_product',id=p.id) }}" onsubmit="return confirm('Delete this product?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-danger">Delete</button></form></td></tr>{% else %}<tr><td colspan="9" class="text-center py-4">No products yet. Add your first product.</td></tr>{% endfor %}</tbody>
-</table></div></div>
+
+<style>
+    /* =========================================
+       VELORA RESPONSIVE PRODUCT INVENTORY
+    ========================================= */
+
+    .products-page {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        font-family: 'DM Sans', sans-serif;
+        color: #292929;
+        overflow-x: hidden;
+    }
+
+    .products-page * {
+        box-sizing: border-box;
+    }
+
+    /* Page Heading */
+    .products-page .page-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .products-page .page-heading h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(22px, 3vw, 30px);
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #292929;
+    }
+
+    .products-page .page-heading p {
+        color: #888;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    /* Add Button */
+    .add-product-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 17px;
+        background: #292929;
+        color: #fff;
+        border: 1px solid #292929;
+        border-radius: 2px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .3s;
+    }
+
+    .add-product-btn:hover {
+        background: #857763;
+        border-color: #857763;
+        color: #fff;
+    }
+
+    /* Inventory Card */
+    .inventory-card {
+        width: 100%;
+        background: #fff;
+        border: 1px solid #eae7e2;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .inventory-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 17px 20px;
+        background: #faf9f6;
+        border-bottom: 1px solid #eae7e2;
+    }
+
+    .inventory-header h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 19px;
+        font-weight: 600;
+        color: #292929;
+        margin: 0;
+    }
+
+    .inventory-count {
+        color: #857763;
+        background: #f1eee8;
+        padding: 6px 10px;
+        font-size: 10px;
+        font-weight: 600;
+        border-radius: 2px;
+        white-space: nowrap;
+    }
+
+    /* Responsive Table */
+    .products-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .products-page .table {
+        width: 100%;
+        min-width: 850px;
+        margin-bottom: 0;
+        border-collapse: collapse;
+    }
+
+    .products-page .table thead th {
+        padding: 12px 10px;
+        background: #f7f6f2;
+        color: #777;
+        border-bottom: 1px solid #eae7e2;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .products-page .table tbody td {
+        padding: 11px 10px;
+        color: #666;
+        border-bottom: 1px solid #f0eee9;
+        font-size: 11px;
+        vertical-align: middle;
+    }
+
+    .products-page .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .products-page .table tbody tr:hover {
+        background: #faf9f6;
+    }
+
+    .product-id {
+        color: #999;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .product-name {
+        color: #292929;
+        font-weight: 600;
+        min-width: 100px;
+        display: inline-block;
+    }
+
+    .product-category,
+    .product-cost {
+        color: #777;
+    }
+
+    .product-price {
+        color: #857763;
+        font-weight: 700;
+    }
+
+    /* Images */
+    .product-image,
+    .no-image {
+        width: 48px;
+        height: 55px;
+        border: 1px solid #eae7e2;
+        background: #f7f6f2;
+    }
+
+    .product-image {
+        display: block;
+        object-fit: cover;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .product-image:hover,
+    .additional-image:hover {
+        opacity: .7;
+    }
+
+    .no-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #aaa;
+        font-size: 9px;
+        text-align: center;
+    }
+
+    .additional-images {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-wrap: wrap;
+        max-width: 130px;
+    }
+
+    .additional-image {
+        width: 28px;
+        height: 34px;
+        object-fit: cover;
+        border: 1px solid #eae7e2;
+        background: #f7f6f2;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .no-additional-image {
+        color: #aaa;
+        font-size: 10px;
+    }
+
+    /* Stock */
+    .stock-badge {
+        display: inline-block;
+        padding: 5px 8px;
+        border-radius: 2px;
+        font-size: 9px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .stock-available {
+        background: #edf4ed;
+        color: #527a52;
+    }
+
+    .stock-empty {
+        background: #f9eded;
+        color: #b34c4c;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        white-space: nowrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 7px 9px;
+        border: none;
+        border-radius: 2px;
+        font-size: 9px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .edit-btn {
+        background: #f1eee8;
+        color: #857763;
+    }
+
+    .edit-btn:hover {
+        background: #857763;
+        color: #fff;
+    }
+
+    .delete-btn {
+        background: #f8eeee;
+        color: #b34c4c;
+    }
+
+    .delete-btn:hover {
+        background: #b34c4c;
+        color: #fff;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 45px 15px !important;
+        text-align: center;
+        color: #888;
+    }
+
+    .empty-state-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        background: #f7f6f2;
+        color: #a38b6b;
+        border-radius: 50%;
+        font-size: 21px;
+    }
+
+    .empty-state h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 19px;
+        color: #292929;
+        margin-bottom: 7px;
+    }
+
+    .empty-state p {
+        font-size: 11px;
+        margin-bottom: 17px;
+    }
+
+    /* Modals */
+    .products-page .modal-content,
+    .image-modal .modal-content {
+        border: 1px solid #eae7e2;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .products-page .modal-header,
+    .image-modal .modal-header {
+        padding: 15px 20px;
+        background: #f7f6f2;
+        border-bottom: 1px solid #eae7e2;
+    }
+
+    .products-page .modal-title,
+    .image-modal .modal-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 19px;
+        color: #292929;
+    }
+
+    .products-page .modal-body {
+        padding: 22px;
+        color: #666;
+        font-size: 12px;
+    }
+
+    .confirm-delete-btn,
+    .cancel-btn {
+        padding: 9px 15px;
+        border-radius: 2px;
+        font-size: 10px;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+    .confirm-delete-btn {
+        color: #fff;
+        background: #b34c4c;
+        border: 1px solid #b34c4c;
+    }
+
+    .confirm-delete-btn:hover {
+        color: #fff;
+        background: #923b3b;
+    }
+
+    .cancel-btn {
+        color: #555;
+        background: #f1eee8;
+        border: 1px solid #eae7e2;
+    }
+
+    .cancel-btn:hover {
+        background: #e5e0d7;
+    }
+
+    .image-preview {
+        width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+        background: #f7f6f2;
+    }
+
+    /* Tablet */
+    @media (max-width: 992px) {
+        .products-page .table {
+            min-width: 800px;
+        }
+
+        .products-page .table thead th,
+        .products-page .table tbody td {
+            padding: 10px 8px;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 576px) {
+        .products-page .page-top {
+            align-items: stretch;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .products-page .add-product-btn {
+            width: 100%;
+        }
+
+        .inventory-header {
+            padding: 14px;
+        }
+
+        .inventory-header h5 {
+            font-size: 17px;
+        }
+
+        .products-page .table {
+            min-width: 760px;
+        }
+
+        .products-page .table thead th {
+            font-size: 8px;
+        }
+
+        .products-page .table tbody td {
+            font-size: 10px;
+        }
+    }
+
+/* =====================================
+   VELORA PRODUCT ADMIN FONT SIZES
+===================================== */
+
+/* Page title */
+.product-page h2,
+.page-title h2 {
+    font-size: 24px !important;
+}
+
+/* Page description */
+.page-title p {
+    font-size: 12px !important;
+}
+
+/* Table headings */
+.product-page .table thead th {
+    font-size: 11px !important;
+    font-weight: 600;
+}
+
+/* Table content */
+.product-page .table tbody td {
+    font-size: 12px !important;
+}
+
+/* Product name */
+.product-page .product-name {
+    font-size: 13px !important;
+    font-weight: 600;
+}
+
+/* Category and secondary text */
+.product-page .text-muted,
+.product-page small {
+    font-size: 11px !important;
+}
+
+/* Buttons */
+.product-page .btn {
+    font-size: 11px !important;
+}
+
+/* Search input and dropdown */
+.product-page .form-control,
+.product-page .form-select {
+    font-size: 12px !important;
+}
+
+/* Pagination */
+.product-page .pagination {
+    font-size: 12px !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .page-title h2 {
+        font-size: 21px !important;
+    }
+
+    .product-page .table tbody td {
+        font-size: 11px !important;
+    }
+}
+
+</style>
+
+
+<div class="products-page">
+
+    <!-- PAGE HEADING -->
+    <div class="page-top">
+
+        <div class="page-heading">
+            <h2>Products</h2>
+            <p>Manage your VELORA product inventory, prices and stock.</p>
+        </div>
+
+        <a href="{{ url_for('admin.create_product') }}"
+           class="add-product-btn">
+            <i class="fas fa-plus"></i>
+            Add Product
+        </a>
+
+    </div>
+
+
+    <!-- PRODUCT INVENTORY -->
+    <div class="inventory-card">
+
+        <div class="inventory-header">
+            <h5>Product Inventory</h5>
+
+            <span class="inventory-count">
+                {{ products|length }} Products
+            </span>
+        </div>
+
+        <div class="products-table-wrapper">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Thumbnail</th>
+                        <th>Additional Images</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Cost</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for p in products %}
+
+                    <tr>
+
+                        <td>
+                            <span class="product-id">#{{ p.id }}</span>
+                        </td>
+
+                        <!-- MAIN IMAGE -->
+                        <td>
+                            {% if p.thumbnail %}
+
+                                {% set thumbnail_url = p.thumbnail if p.thumbnail.startswith('http') else url_for('static', filename='uploads/products/' ~ p.thumbnail) %}
+
+                                <img
+                                    src="{{ thumbnail_url }}"
+                                    alt="{{ p.name }}"
+                                    class="product-image"
+                                    onclick="showImage(this.src, this.alt)"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                >
+
+                                <div class="no-image" style="display:none;">
+                                    No Image
+                                </div>
+
+                            {% else %}
+                                <div class="no-image">No Image</div>
+                            {% endif %}
+                        </td>
+
+                        <!-- ADDITIONAL IMAGES -->
+                        <td>
+                            <div class="additional-images">
+
+                                {% if p.images %}
+
+                                    {% for image in p.images %}
+
+                                        {% set image_filename = image.name %}
+
+                                        {% if image_filename %}
+
+                                            {% set additional_url = image_filename if image_filename.startswith('http') else url_for('static', filename='uploads/products/' ~ image_filename) %}
+
+                                            <img
+                                                src="{{ additional_url }}"
+                                                alt="{{ p.name }} additional image"
+                                                class="additional-image"
+                                                onclick="showImage(this.src, this.alt)"
+                                                onerror="this.style.display='none';"
+                                            >
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                {% else %}
+                                    <span class="no-additional-image">
+                                        No additional images
+                                    </span>
+                                {% endif %}
+
+                            </div>
+                        </td>
+
+                        <!-- NAME -->
+                        <td>
+                            <span class="product-name">{{ p.name }}</span>
+                        </td>
+
+                        <!-- CATEGORY -->
+                        <td>
+                            <span class="product-category">
+                                {{ p.category.name if p.category else '-' }}
+                            </span>
+                        </td>
+
+                        <!-- COST -->
+                        <td>
+                            <span class="product-cost">
+                                ${{ '%.2f'|format(p.cost|float) }}
+                            </span>
+                        </td>
+
+                        <!-- PRICE -->
+                        <td>
+                            <span class="product-price">
+                                ${{ '%.2f'|format(p.price|float) }}
+                            </span>
+                        </td>
+
+                        <!-- STOCK -->
+                        <td>
+                            {% if p.stock|int > 0 %}
+                                <span class="stock-badge stock-available">
+                                    {{ p.stock }} Available
+                                </span>
+                            {% else %}
+                                <span class="stock-badge stock-empty">
+                                    Out of Stock
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- ACTIONS -->
+                        <td>
+                            <div class="action-buttons">
+
+                                <a href="{{ url_for('admin.edit_product', id=p.id) }}"
+                                   class="action-btn edit-btn">
+                                    <i class="fas fa-pen"></i>
+                                    Edit
+                                </a>
+
+                                <button
+                                    type="button"
+                                    class="action-btn delete-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteProductModal{{ p.id }}">
+                                    <i class="fas fa-trash"></i>
+                                    Delete
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="9" class="empty-state">
+
+                            <div class="empty-state-icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+
+                            <h5>No Products Yet</h5>
+
+                            <p>
+                                Your product inventory is currently empty.
+                                Start by adding your first product.
+                            </p>
+
+                            <a href="{{ url_for('admin.create_product') }}"
+                               class="add-product-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Your First Product
+                            </a>
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <!-- DELETE CONFIRMATION MODALS -->
+    {% for p in products %}
+
+    <div class="modal fade"
+         id="deleteProductModal{{ p.id }}"
+         tabindex="-1"
+         aria-labelledby="deleteProductLabel{{ p.id }}"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title"
+                        id="deleteProductLabel{{ p.id }}">
+                        Confirm Delete
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body text-center">
+
+                    <div class="mb-3">
+                        <i class="fas fa-trash-alt"
+                           style="font-size: 36px; color: #b34c4c;">
+                        </i>
+                    </div>
+
+                    <h6 class="mb-2">
+                        Delete "{{ p.name }}"?
+                    </h6>
+
+                    <p class="mb-0">
+                        Are you sure you want to delete this product?
+                        This action cannot be undone.
+                    </p>
+
+                </div>
+
+                <div class="modal-footer justify-content-center">
+
+                    <button type="button"
+                            class="cancel-btn"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <form method="POST"
+                          action="{{ url_for('admin.delete_product', id=p.id) }}">
+
+                        <input type="hidden"
+                               name="csrf_token"
+                               value="{{ csrf_token() }}">
+
+                        <button type="submit"
+                                class="confirm-delete-btn">
+                            Yes, Delete
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- IMAGE PREVIEW MODAL -->
+<div class="modal fade image-modal"
+     id="imagePreviewModal"
+     tabindex="-1"
+     aria-labelledby="imagePreviewTitle"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="imagePreviewTitle">
+                    Product Image
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+            <div class="modal-body text-center p-2">
+
+                <img id="imagePreview"
+                     src=""
+                     alt="Product preview"
+                     class="image-preview">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- IMAGE PREVIEW SCRIPT -->
+<script>
+    function showImage(imageUrl, imageName) {
+        const image = document.getElementById('imagePreview');
+        const title = document.getElementById('imagePreviewTitle');
+        const modalElement = document.getElementById('imagePreviewModal');
+
+        if (!image || !modalElement || !window.bootstrap) {
+            return;
+        }
+
+        image.src = imageUrl;
+        title.textContent = imageName || 'Product Image';
+
+        const imageModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        imageModal.show();
+    }
+</script>
+
 {% endblock %}

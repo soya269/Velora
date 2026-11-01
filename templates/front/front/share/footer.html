@@ -1,35 +1,140 @@
+
 <footer class="site-footer">
+    <style>
+        .site-footer {
+            background: #252525;
+            color: #fff;
+            padding: 65px 0 0;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .site-footer .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 45px;
+            padding-bottom: 45px;
+        }
+
+        .site-footer h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .site-footer h5 {
+            font-family: 'Playfair Display', serif;
+            font-size: 19px;
+            margin-bottom: 22px;
+            color: #c4ad8e;
+        }
+
+        .site-footer p {
+            color: #aaa;
+            font-size: 13px;
+            line-height: 1.9;
+            max-width: 340px;
+        }
+
+        .site-footer .footer-grid a {
+            display: block;
+            width: fit-content;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 13px;
+            transition: .3s ease;
+        }
+
+        .site-footer .footer-grid a:hover {
+            color: #c4ad8e;
+            padding-left: 5px;
+        }
+
+        .site-footer .footer-bottom {
+            border-top: 1px solid #414141;
+            padding: 22px 0;
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 991px) {
+            .site-footer .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 35px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .site-footer {
+                padding-top: 45px;
+            }
+
+            .site-footer .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .site-footer h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+
     <div class="container">
+
         <div class="footer-grid">
+
+            <!-- BRAND -->
             <div>
                 <h2>VELORA</h2>
+
                 <p>
                     Luxury runway-inspired fashion crafted for timeless elegance.
                     Designed for those who appreciate premium style, quality,
                     and modern sophistication.
                 </p>
             </div>
+
+            <!-- SHOP -->
             <div>
                 <h5>Shop</h5>
+
                 <a href="/products">Women</a>
                 <a href="/products">Men</a>
                 <a href="/products">Accessories</a>
                 <a href="/products">New Arrivals</a>
             </div>
+
+            <!-- COMPANY -->
             <div>
                 <h5>Company</h5>
+
                 <a href="/about">About</a>
                 <a href="/contact">Contact</a>
                 <a href="/account">Account</a>
                 <a href="/cart">Cart</a>
             </div>
+
+            <!-- NEWSLETTER -->
             <div>
                 <h5>Newsletter</h5>
-                <p>Receive exclusive runway releases and premium offers.</p>
+
+                <p>
+                    Receive exclusive runway releases and premium offers.
+                    Stay inspired with the latest from VELORA.
+                </p>
             </div>
+
         </div>
+
+        <!-- COPYRIGHT -->
         <div class="footer-bottom">
-            © 2026 VELORA — Luxury Fashion House
+            © 2026 VELORA — Luxury Fashion House. All Rights Reserved.
         </div>
+
     </div>
 </footer>

@@ -1,75 +1,3 @@
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1">#}
-{#    <title>Products | VELORA</title>#}
-{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">#}
-{#    <link rel="stylesheet" href="{{ url_for('static',filename='front/style.css') }}">#}
-{#</head>#}
-{#<body>{% include 'front/front/share/navbar.html' %}#}
-{#<main>#}
-{#    <section class="page-banner">#}
-{#        <div class="container text-center"><span>VELORA COLLECTION</span>#}
-{#            <h1>{{ selected_category }}</h1>#}
-{#            <p>Discover products from the VELORA collection.</p></div>#}
-{#    </section>#}
-{#    <section class="py-5">#}
-{#        <div class="container">#}
-{#            <form class="row g-2 mb-4" method="GET" action="{{ url_for('front.product_list') }}">#}
-{#                <div class="col-md-3"><input class="form-control" name="q" placeholder="Search products..."#}
-{#                                             value="{{ search }}"></div>#}
-{#                <div class="col-md-2"><select class="form-select" name="category">#}
-{#                    <option value="">All categories</option>{% for c in categories %}#}
-{#                    <option value="{{ c.id }}"#}
-{#                            {% if request.args.get('category') == c.id|string %}selected{% endif %}>{{ c.name }}</option>{% endfor %}#}
-{#                </select></div>#}
-{#                <div class="col-md-2"><select class="form-select" name="brand">#}
-{#                    <option value="">All brands</option>{% for b in brands %}#}
-{#                    <option value="{{ b.id }}"#}
-{#                            {% if selected_brand == b.id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}#}
-{#                </select></div>#}
-{#                <div class="col-md-1"><input class="form-control" type="number" min="0" step=".01" name="min_price"#}
-{#                                             placeholder="Min $" value="{{ min_price }}"></div>#}
-{#                <div class="col-md-1"><input class="form-control" type="number" min="0" step=".01" name="max_price"#}
-{#                                             placeholder="Max $" value="{{ max_price }}"></div>#}
-{#                <div class="col-md-2"><select class="form-select" name="in_stock">#}
-{#                    <option value="">Any stock</option>#}
-{#                    <option value="1" {% if in_stock == '1' %}selected{% endif %}>In stock</option>#}
-{#                </select></div>#}
-{#                <div class="col-md-1">#}
-{#                    <button class="btn btn-dark w-100">Filter</button>#}
-{#                </div>#}
-{#            </form>#}
-{#            <div class="row g-4">{% for product in products %}#}
-{#                <div class="col-6 col-md-4 col-lg-3">#}
-{#                    <div class="card h-100 border-0 shadow-sm">#}
-{#                        <a href="{{ url_for('front.product_detail',id=product.id) }}">{% if product.images %}#}
-{#                            <img src="{{ product.images[0] }}" class="card-img-top"#}
-{#                                 style="height:230px;object-fit:cover" alt="{{ product.title }}">{% else %}#}
-{#                            <div class="bg-light d-flex align-items-center justify-content-center" style="height:230px">#}
-{#                                No image#}
-{#                            </div>{% endif %}</a>#}
-{#                        <div class="card-body"><small class="text-muted">{{ product.category.name }}</small><h6#}
-{#                                class="mt-2">{{ product.title }}</h6>#}
-{#                            <p class="fw-bold mb-1">${{ '%.2f'|format(product.price) }}</p><small#}
-{#                                    class="{{ 'text-success' if product.stock > 0 else 'text-danger' }}">{{ 'In stock: ' ~ product.stock if product.stock > 0 else 'Out of stock' }}</small>#}
-{#                            <div class="mt-3"><a class="btn btn-dark btn-sm"#}
-{#                                                 href="{{ url_for('front.product_detail',id=product.id) }}">View#}
-{#                                details</a></div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#            {% else %}#}
-{#                <div class="col-12 text-center py-5"><h4>No products found</h4>#}
-{#                    <p>Try changing your filters.</p></div>{% endfor %}</div>#}
-{#        </div>#}
-{#    </section>#}
-{#</main>#}
-{#{% include 'front/front/share/footer.html' %}#}
-{#<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>#}
-{#</body>#}
-{#</html>#}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -89,166 +17,600 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='front/style.css') }}"
     >
+
+    <style>
+        /* =========================================
+           VELORA PRODUCT COLLECTION
+        ========================================= */
+
+        .vp-page {
+            min-height: 100vh;
+            background: #f8f8f6;
+            color: #252525;
+        }
+
+        .vp-page * {
+            box-sizing: border-box;
+        }
+
+        /* Banner */
+
+        .vp-banner {
+            padding: 55px 20px;
+            background: #eaeae6;
+            text-align: center;
+        }
+
+        .vp-banner-label {
+            display: block;
+            margin-bottom: 12px;
+            color: #777;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 4px;
+        }
+
+        .vp-banner h1 {
+            margin: 0 0 12px;
+            color: #222;
+            font-size: clamp(30px, 4vw, 46px);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .vp-banner p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* Main section */
+
+        .vp-section {
+            padding: 48px 0 70px;
+        }
+
+        .vp-heading {
+            margin-bottom: 25px;
+        }
+
+        .vp-eyebrow {
+            margin-bottom: 8px;
+            color: #999;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .vp-heading h2 {
+            margin: 0 0 8px;
+            color: #252525;
+            font-size: 27px;
+            font-weight: 600;
+        }
+
+        .vp-heading p {
+            margin: 0;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .vp-result-count {
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* Search and filters */
+
+        .vp-filter {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr auto;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding: 18px;
+            background: #fff;
+            border: 1px solid #e9e9e5;
+        }
+
+        .vp-filter .form-control,
+        .vp-filter .form-select {
+            min-height: 44px;
+            border: 1px solid #e4e4e0;
+            border-radius: 0;
+            background-color: #fff;
+            color: #444;
+            font-size: 13px;
+            box-shadow: none;
+        }
+
+        .vp-filter .form-control:focus,
+        .vp-filter .form-select:focus {
+            border-color: #777;
+        }
+
+        .vp-filter-btn {
+            min-width: 115px;
+            min-height: 44px;
+            padding: 10px 20px;
+            border: 1px solid #252525;
+            border-radius: 0;
+            background: #252525;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            transition: .25s ease;
+        }
+
+        .vp-filter-btn:hover {
+            border-color: #777;
+            background: #777;
+            color: #fff;
+        }
+
+        /* Product cards */
+
+        .vp-grid {
+            row-gap: 25px;
+        }
+
+        .vp-card {
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid #ededeb;
+            background: #fff;
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+        .vp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .07);
+        }
+
+        .vp-image-wrap {
+            position: relative;
+            display: block;
+            overflow: hidden;
+            aspect-ratio: 4 / 4.5;
+            background: #efefec;
+        }
+
+        .vp-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+            transition: transform .45s ease;
+        }
+
+        .vp-card:hover .vp-image {
+            transform: scale(1.05);
+        }
+
+        .vp-stock-label {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 6px 9px;
+            background: rgba(255, 255, 255, .94);
+            color: #333;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .vp-stock-label.out {
+            background: #333;
+            color: #fff;
+        }
+
+        .vp-info {
+            padding: 17px 16px 18px;
+        }
+
+        .vp-category {
+            display: block;
+            margin-bottom: 7px;
+            color: #999;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .vp-name {
+            min-height: 42px;
+            margin: 0 0 8px;
+            color: #292929;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.45;
+        }
+
+        .vp-name a {
+            color: inherit;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .vp-name a:hover {
+            color: #888;
+        }
+
+        .vp-price {
+            margin: 0 0 12px;
+            color: #222;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .vp-stock {
+            margin-bottom: 14px;
+            font-size: 11px;
+        }
+
+        .vp-stock.available {
+            color: #52815d;
+        }
+
+        .vp-stock.unavailable {
+            color: #b34d4d;
+        }
+
+        .vp-view-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 40px;
+            padding: 10px;
+            border: 1px solid #252525;
+            background: #252525;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            transition: .25s ease;
+        }
+
+        .vp-view-btn:hover {
+            border-color: #777;
+            background: #777;
+            color: #fff;
+        }
+
+        /* Empty state */
+
+        .vp-empty {
+            padding: 65px 20px;
+            border: 1px solid #e9e9e5;
+            background: #fff;
+            text-align: center;
+        }
+
+        .vp-empty-icon {
+            margin-bottom: 15px;
+            color: #aaa;
+            font-size: 35px;
+        }
+
+        .vp-empty h3 {
+            margin-bottom: 10px;
+            color: #292929;
+            font-size: 21px;
+            font-weight: 600;
+        }
+
+        .vp-empty p {
+            margin-bottom: 22px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .vp-reset-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 22px;
+            background: #252525;
+            color: #fff;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: .25s ease;
+        }
+
+        .vp-reset-btn:hover {
+            background: #777;
+            color: #fff;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 991px) {
+            .vp-filter {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .vp-filter-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .vp-banner {
+                padding: 42px 15px;
+            }
+
+            .vp-banner-label {
+                font-size: 9px;
+                letter-spacing: 3px;
+            }
+
+            .vp-banner p {
+                font-size: 12px;
+            }
+
+            .vp-section {
+                padding: 32px 0 45px;
+            }
+
+            .vp-heading h2 {
+                font-size: 23px;
+            }
+
+            .vp-filter {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 13px;
+                margin-bottom: 22px;
+            }
+
+            .vp-grid {
+                --bs-gutter-x: 12px;
+                --bs-gutter-y: 16px;
+            }
+
+            .vp-info {
+                padding: 12px 10px 13px;
+            }
+
+            .vp-name {
+                min-height: 38px;
+                font-size: 13px;
+            }
+
+            .vp-price {
+                font-size: 15px;
+            }
+
+            .vp-stock {
+                font-size: 10px;
+            }
+
+            .vp-view-btn {
+                min-height: 36px;
+                font-size: 9px;
+            }
+
+            .vp-stock-label {
+                top: 8px;
+                left: 8px;
+                padding: 5px 7px;
+                font-size: 8px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
     {% include 'front/front/share/navbar.html' %}
 
-    <main>
+    <main class="vp-page">
 
-        <!-- Page Banner -->
-        <section class="page-banner">
-            <div class="container text-center">
-                <span>VELORA COLLECTION</span>
+        <!-- PAGE BANNER -->
+        <section class="vp-banner">
+            <div class="container">
 
-                <h1>{{ selected_category }}</h1>
+                <span class="vp-banner-label">VELORA COLLECTION</span>
 
-                <p>Discover products from the VELORA collection.</p>
+                <h1>{{ selected_category or 'Explore Our Collection' }}</h1>
+
+                <p>
+                    Discover timeless fashion pieces curated for your style.
+                </p>
+
             </div>
         </section>
 
-        <!-- Product Section -->
-        <section class="py-5">
+
+        <!-- PRODUCTS SECTION -->
+        <section class="vp-section">
+
             <div class="container">
 
 
-<!-- Search and Filter -->
-<form
-    class="row g-2 mb-4"
-    method="GET"
-    action="{{ url_for('front.product_list') }}"
->
 
-   <!-- Search -->
-<div class="col-md-3">
-    <input
-        class="form-control w-100"
-        type="text"
-        name="q"
-        placeholder="Search products..."
-        value="{{ search }}"
-    >
-</div>
-
-    <!-- Category -->
-    <div class="col-md-3">
-        <select class="form-select" name="category">
-            <option value="">All categories</option>
-
-            {% for c in categories %}
-                <option
-                    value="{{ c.id }}"
-                    {% if request.args.get('category') == c.id|string %}
-                        selected
-                    {% endif %}
+                <!-- SEARCH AND FILTER -->
+                <form
+                    class="vp-filter"
+                    method="GET"
+                    action="{{ url_for('front.product_list') }}"
                 >
-                    {{ c.name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
 
-    <!-- Stock -->
-    <div class="col-md-3">
-        <select class="form-select" name="in_stock">
-            <option value="">Any stock</option>
+                    <!-- Search -->
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Search products..."
+                        value="{{ search or '' }}"
+                        aria-label="Search products"
+                    >
 
-            <option
-                value="1"
-                {% if in_stock == '1' %}selected{% endif %}
-            >
-                In stock
-            </option>
-        </select>
-    </div>
+                    <!-- Category -->
 
-    <!-- Filter Button -->
-    <div class="col-md-3">
-        <button class="btn btn-dark w-100" type="submit">
-            Filter
-        </button>
-    </div>
+<select
+    name="category"
+    class="form-select"
+    aria-label="Filter by category"
+>
+    <option value="">All Categories</option>
 
-</form>
+    {% for c in categories %}
+        <option
+            value="{{ c.id }}"
+            {% if request.args.get('category') == c.id|string %}
+                selected
+            {% endif %}
+        >
+            {{ c.name }}
+        </option>
+    {% endfor %}
+</select>
+
+                    <!-- Stock -->
+                    <select
+                        name="in_stock"
+                        class="form-select"
+                        aria-label="Filter by stock"
+                    >
+                        <option value="">All Products</option>
+
+                        <option
+                            value="1"
+                            {% if in_stock == '1' %}
+                                selected
+                            {% endif %}
+                        >
+                            In Stock Only
+                        </option>
+                    </select>
+
+                    <!-- Filter button -->
+                    <button type="submit" class="vp-filter-btn">
+                        FILTER
+                    </button>
+
+                </form>
 
 
-                <!-- Products -->
-                <div class="row g-4">
+                <!-- PRODUCT GRID -->
+                <div class="row vp-grid">
 
                     {% for product in products %}
 
                         <div class="col-6 col-md-4 col-lg-3">
 
-                            <div class="card h-100 border-0 shadow-sm">
+                            <article class="vp-card">
 
-                                <a href="{{ url_for('front.product_detail', id=product.id) }}">
+                                <!-- Product image -->
+                                <a
+                                    href="{{ url_for('front.product_detail', id=product.id) }}"
+                                    class="vp-image-wrap"
+                                    aria-label="View {{ product.title }}"
+                                >
 
                                     {% if product.images %}
-
                                         <img
                                             src="{{ product.images[0] }}"
-                                            class="card-img-top"
-                                            style="height:230px; object-fit:cover;"
+                                            class="vp-image"
                                             alt="{{ product.title }}"
-                                            onerror="this.src='https://placehold.co/600x400?text=No+Image'"
+                                            loading="lazy"
+                                            onerror="this.onerror=null;this.src='https://placehold.co/600x675?text=VELORA';"
                                         >
-
                                     {% else %}
-
-                                        <div
-                                            class="bg-light d-flex align-items-center justify-content-center"
-                                            style="height:230px;"
+                                        <img
+                                            src="https://placehold.co/600x675?text=VELORA"
+                                            class="vp-image"
+                                            alt="No product image available"
+                                            loading="lazy"
                                         >
-                                            No image
-                                        </div>
+                                    {% endif %}
 
+                                    {% if product.stock|default(0, true)|int > 0 %}
+                                        <span class="vp-stock-label">
+                                            Available
+                                        </span>
+                                    {% else %}
+                                        <span class="vp-stock-label out">
+                                            Sold Out
+                                        </span>
                                     {% endif %}
 
                                 </a>
 
-                                <div class="card-body">
 
-                                    <small class="text-muted">
+                                <!-- Product information -->
+                                <div class="vp-info">
+
+                                    <span class="vp-category">
                                         {{ product.category.name if product.category else 'Fashion' }}
-                                    </small>
+                                    </span>
 
-                                    <h6 class="mt-2">
-                                        {{ product.title }}
-                                    </h6>
+                                    <h3 class="vp-name">
+                                        <a href="{{ url_for('front.product_detail', id=product.id) }}">
+                                            {{ product.title }}
+                                        </a>
+                                    </h3>
 
-                                    <p class="fw-bold mb-1">
+                                    <p class="vp-price">
                                         ${{ '%.2f'|format(product.price|float) }}
                                     </p>
 
-                                    <small class="{{ 'text-success' if product.stock > 0 else 'text-danger' }}">
-                                        {{ 'In stock: ' ~ product.stock if product.stock > 0 else 'Out of stock' }}
-                                    </small>
+                                    {% if product.stock|default(0, true)|int > 0 %}
+                                        <p class="vp-stock available">
+                                            In Stock: {{ product.stock }}
+                                        </p>
+                                    {% else %}
+                                        <p class="vp-stock unavailable">
+                                            Currently unavailable
+                                        </p>
+                                    {% endif %}
 
-                                    <div class="mt-3">
-
-                                        <a
-                                            class="btn btn-dark btn-sm"
-                                            href="{{ url_for('front.product_detail', id=product.id) }}"
-                                        >
-                                            View details
-                                        </a>
-
-                                    </div>
+                                    <a
+                                        href="{{ url_for('front.product_detail', id=product.id) }}"
+                                        class="vp-view-btn"
+                                    >
+                                        VIEW DETAILS
+                                    </a>
 
                                 </div>
 
-                            </div>
+                            </article>
 
                         </div>
 
                     {% else %}
 
-                        <div class="col-12 text-center py-5">
+                        <!-- EMPTY STATE -->
+                        <div class="col-12">
 
-                            <h4>No products found</h4>
+                            <div class="vp-empty">
 
-                            <p>Try changing your search or category.</p>
+                                <div class="vp-empty-icon">⌕</div>
+
+                                <h3>No Products Found</h3>
+
+                                <p>
+                                    We couldn't find products matching your search.
+                                    Try another keyword or category.
+                                </p>
+
+                                <a
+                                    href="{{ url_for('front.product_list') }}"
+                                    class="vp-reset-btn"
+                                >
+                                    VIEW ALL PRODUCTS
+                                </a>
+
+                            </div>
 
                         </div>
 
@@ -257,15 +619,15 @@
                 </div>
 
             </div>
+
         </section>
 
     </main>
 
+
     {% include 'front/front/share/footer.html' %}
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

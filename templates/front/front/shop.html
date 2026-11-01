@@ -1,75 +1,389 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop | VELORA</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='front/style.css') }}">
+
+    <title>Shop All Products | VELORA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='front/style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --velora-black: #252525;
+            --velora-dark: #333333;
+            --velora-cream: #f7f6f2;
+            --velora-grey: #efefec;
+            --velora-muted: #858585;
+            --velora-border: #e6e4df;
+            --velora-accent: #a38b6b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #ffffff;
+            color: var(--velora-black);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* SHOP BANNER */
+
+        .shop-banner {
+            padding: 85px 20px;
+            background: var(--velora-cream);
+            text-align: center;
+        }
+
+        .shop-banner-label {
+            color: var(--velora-accent);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .shop-banner h1 {
+            margin: 18px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(35px, 5vw, 55px);
+            font-weight: 500;
+        }
+
+        .shop-banner p {
+            max-width: 550px;
+            margin: auto;
+            color: var(--velora-muted);
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        /* SHOP SECTION */
+
+        .shop-section {
+            padding: 65px 0 90px;
+        }
+
+        .shop-heading h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 34px;
+            font-weight: 500;
+        }
+
+        .shop-heading p {
+            color: var(--velora-muted);
+            font-size: 13px;
+        }
+
+        .product-count {
+            color: var(--velora-accent);
+            font-weight: 600;
+        }
+
+        /* PRODUCT CARD */
+
+        .product-card {
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid var(--velora-border);
+            background: #ffffff;
+            transition: all .35s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .07);
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            display: block;
+            overflow: hidden;
+            background: var(--velora-grey);
+        }
+
+        .product-image {
+            display: block;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+            transition: transform .6s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            padding: 7px 12px;
+            background: var(--velora-black);
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .product-category {
+            color: var(--velora-accent);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .product-name {
+            min-height: 48px;
+            margin-top: 9px;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--velora-black);
+        }
+
+        .product-price {
+            margin: 10px 0 18px;
+            color: var(--velora-black);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .product-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--velora-black);
+            background: var(--velora-black);
+            color: #ffffff;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: .3s;
+        }
+
+        .product-button:hover {
+            background: transparent;
+            color: var(--velora-black);
+        }
+
+        /* EMPTY PRODUCTS */
+
+        .empty-products {
+            padding: 75px 20px;
+            background: var(--velora-cream);
+            text-align: center;
+            border: 1px solid var(--velora-border);
+        }
+
+        .empty-products h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 27px;
+        }
+
+        .empty-products p {
+            color: var(--velora-muted);
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 767px) {
+            .shop-banner {
+                padding: 65px 15px;
+            }
+
+            .shop-section {
+                padding: 45px 0 60px;
+            }
+
+            .shop-heading h2 {
+                font-size: 28px;
+            }
+
+            .product-info {
+                padding: 13px;
+            }
+
+            .product-name {
+                font-size: 15px;
+            }
+
+            .product-price {
+                font-size: 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
     {% include 'front/front/share/navbar.html' %}
+
     <main>
-        <!-- Banner -->
-        <section class="page-banner">
-            <div class="container text-center">
-                <span>SHOP</span>
-                <h1>
-                    Luxury Fashion Store
-                </h1>
+
+        <!-- SHOP BANNER -->
+
+        <section class="shop-banner">
+            <div class="container">
+
+                <span class="shop-banner-label">
+                   EXPLORE OUR STORE
+                </span>
+
+                <h1>All Products</h1>
+
                 <p>
-                    Explore curated premium fashion pieces.
+                   Find your favorite style from our collection.
                 </p>
+
             </div>
         </section>
-        <!-- Products -->
-        <section class="featured-section py-5">
+
+
+        <!-- ALL PRODUCTS -->
+
+        <section class="shop-section">
+
             <div class="container">
-                <div class="row">
+
+                <!-- PRODUCT GRID -->
+
+                <div class="row g-4">
+
                     {% for product in products %}
-                    <div class="col-md-3 mb-4">
-                        <div class="card h-100 shadow-sm border-0">
-                            <a href="/product/{{ product.id }}">
+
+                    <div class="col-lg-3 col-md-4 col-6">
+
+                        <div class="product-card">
+
+                            <!-- PRODUCT IMAGE -->
+
+                            <a href="/product/{{ product.id }}"
+                               class="product-image-wrapper">
+
+                                <span class="product-badge">
+                                    VELORA
+                                </span>
+
                                 <img
-                                    src="{{ product.images[0] }}"
-                                    class="card-img-top"
+                                    src="{{ product.images[0] if product.images else 'https://placehold.co/600x750?text=VELORA' }}"
+                                    class="product-image"
                                     alt="{{ product.title }}"
-                                    style="height:300px; object-fit:cover;"
+                                    loading="lazy"
                                     referrerpolicy="no-referrer"
-                                    onerror="this.src='https://placehold.co/600x400?text=No+Image'"
-                                >
+                                    onerror="this.onerror=null;this.src='https://placehold.co/600x750?text=VELORA';">
+
                             </a>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">
+
+
+                            <!-- PRODUCT INFORMATION -->
+
+                            <div class="product-info">
+
+                                <span class="product-category">
+
+                                    {% if product.category %}
+                                        {{ product.category.name }}
+                                    {% else %}
+                                        Fashion Collection
+                                    {% endif %}
+
+                                </span>
+
+                                <h5 class="product-name">
                                     {{ product.title }}
                                 </h5>
-                                <p class="text-muted mb-2">
-                                    {{ product.category.name }}
-                                </p>
-                                <h6 class="mb-3">
-                                    $ {{ product.price }}
-                                </h6>
-                                <a
-                                    href="/product/{{ product.id }}"
-                                    class="btn btn-dark mt-auto"
-                                >
+
+                                <div class="product-price">
+
+                                    {% if product.price is not none %}
+                                        ${{ "%.2f"|format(product.price|float) }}
+                                    {% endif %}
+
+                                </div>
+
+                                <a href="/product/{{ product.id }}"
+                                   class="product-button">
+
                                     View Product
+
                                 </a>
+
                             </div>
+
                         </div>
+
                     </div>
+
+                    {% else %}
+
+                    <!-- NO PRODUCTS -->
+
+                    <div class="col-12">
+
+                        <div class="empty-products">
+
+                            <h3>
+                                No Products Available
+                            </h3>
+
+                            <p class="mt-3 mb-0">
+                                Our collection is being updated.
+                                Please check back soon.
+                            </p>
+
+                        </div>
+
+                    </div>
+
                     {% endfor %}
+
                 </div>
+
             </div>
+
         </section>
+
     </main>
+
+
     {% include 'front/front/share/footer.html' %}
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
+
+

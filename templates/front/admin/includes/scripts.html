@@ -1,5 +1,19 @@
-<!-- Bootstrap Bundle JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Custom Admin JavaScript -->
-<script src="{{ url_for('static', filename='admin/js/app.js') }}"></script>
+<!-- =========================================
+     BOOTSTRAP BUNDLE JS
+========================================= -->
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    defer>
+</script>
+
+<!-- =========================================
+     VELORA ADMIN JAVASCRIPT
+========================================= -->
+<script
+    src="{{ url_for('static', filename='admin/js/app.js') }}"
+    defer>
+</script>
+
+<!-- PAGE-SPECIFIC JAVASCRIPT -->
+{% block extra_js %}{% endblock %}

@@ -1,13 +1,397 @@
+
 {% extends "front/admin/master.html" %}
-{% block title %}Dashboard | VELORA{% endblock %}
+
+{% block title %}Dashboard Overview{% endblock %}
+
 {% block page_content %}
-<div class="mb-4"><h2>Dashboard Overview</h2><p class="text-muted">Live summary from the VELORA database.</p></div>
-<div class="row g-3 mb-4">
-{% for label,value,icon in [('Products',total_products,'fa-box'),('Categories',total_categories,'fa-layer-group'),('Brands',total_brands,'fa-tags'),('Registered Users',total_users,'fa-users'),('Orders',total_orders,'fa-cart-shopping')] %}
-<div class="col-sm-6 col-xl"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">{{ label }}</div><div class="d-flex justify-content-between align-items-center"><h2 class="mb-0">{{ value }}</h2><i class="fa-solid {{ icon }} fa-2x text-secondary"></i></div></div></div></div>
-{% endfor %}
+
+<style>
+    .dashboard-page {
+        font-family: 'DM Sans', sans-serif;
+        color: #292929;
+    }
+
+    /* PAGE HEADER */
+    .dashboard-header {
+        margin-bottom: 28px;
+    }
+
+    .dashboard-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 30px;
+        font-weight: 600;
+        color: #292929;
+        margin-bottom: 6px;
+    }
+
+    .dashboard-header p {
+        color: #888;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* STATISTICS CARDS */
+    .stat-card {
+        background: #fff;
+        border: 1px solid #eae7e2;
+        border-radius: 4px;
+        height: 100%;
+        transition: all 0.25s ease;
+    }
+
+    .stat-card:hover {
+        border-color: #c9bda9;
+        transform: translateY(-3px);
+    }
+
+    .stat-card .card-body {
+        padding: 22px;
+    }
+
+    .stat-label {
+        color: #888;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+
+    .stat-value {
+        font-family: 'Playfair Display', serif;
+        font-size: 32px;
+        font-weight: 600;
+        color: #292929;
+        margin: 0;
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f3ef;
+        color: #857763;
+        border-radius: 50%;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    /* RECENT ORDERS */
+    .recent-orders-card {
+        background: #fff;
+        border: 1px solid #eae7e2;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .recent-orders-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #eeeae5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .recent-orders-header h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 19px;
+        font-weight: 600;
+        margin: 0;
+        color: #292929;
+    }
+
+    .recent-orders-subtitle {
+        color: #999;
+        font-size: 12px;
+    }
+
+    .recent-orders-table {
+        margin: 0;
+        min-width: 650px;
+    }
+
+    .recent-orders-table thead th {
+        background: #f5f3ef;
+        color: #555;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 16px 18px;
+        border-bottom: 1px solid #eae7e2;
+        white-space: nowrap;
+    }
+
+    .recent-orders-table tbody td {
+        padding: 17px 18px;
+        font-size: 13px;
+        color: #666;
+        border-bottom: 1px solid #f0eeea;
+        vertical-align: middle;
+    }
+
+    .recent-orders-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .recent-orders-table tbody tr:hover {
+        background: #fcfbf9;
+    }
+
+    .recent-order-id,
+    .recent-customer,
+    .recent-total {
+        color: #292929;
+        font-weight: 700;
+    }
+
+    .recent-date {
+        color: #888;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    /* STATUS BADGES */
+    .status-badge {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #f8f0df;
+        color: #9a7635;
+    }
+
+    .status-processing {
+        background: #e9eff8;
+        color: #55749c;
+    }
+
+    .status-shipped {
+        background: #eeeafa;
+        color: #7664a8;
+    }
+
+    .status-completed {
+        background: #e8f2e9;
+        color: #527c57;
+    }
+
+    .status-cancelled {
+        background: #f8e9e7;
+        color: #a45e55;
+    }
+
+    .status-default {
+        background: #efefef;
+        color: #666;
+    }
+
+    /* EMPTY STATE */
+    .dashboard-empty {
+        text-align: center;
+        padding: 45px 20px !important;
+    }
+
+    .dashboard-empty i {
+        font-size: 32px;
+        color: #c9c2b8;
+        margin-bottom: 12px;
+    }
+
+    .dashboard-empty p {
+        color: #999;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .dashboard-header h2 {
+            font-size: 25px;
+        }
+
+        .stat-card .card-body {
+            padding: 18px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+        }
+
+        .recent-orders-header {
+            padding: 16px;
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="dashboard-page">
+
+    <!-- PAGE HEADER -->
+    <div class="dashboard-header">
+        <h2>Dashboard Overview</h2>
+        <p>Live summary from the database.</p>
+    </div>
+
+    <!-- STATISTICS CARDS -->
+    <div class="row g-3 mb-4">
+
+        {% for label, value, icon in [
+            ('Products', total_products, 'fa-box'),
+            ('Categories', total_categories, 'fa-layer-group'),
+            ('Registered Users', total_users, 'fa-users'),
+            ('Orders', total_orders, 'fa-cart-shopping')
+        ] %}
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card stat-card">
+                <div class="card-body">
+
+                    <div class="stat-label">
+                        {{ label }}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h2 class="stat-value">
+                            {{ value or 0 }}
+                        </h2>
+
+                        <div class="stat-icon">
+                            <i class="fa-solid {{ icon }}"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- RECENT ORDERS -->
+    <div class="recent-orders-card">
+
+        <div class="recent-orders-header">
+
+            <div>
+                <h5>Recent Orders</h5>
+                <span class="recent-orders-subtitle">
+                    Latest customer orders
+                </span>
+            </div>
+
+            <span class="recent-orders-subtitle">
+                {{ recent_orders|length }} recent order(s)
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table recent-orders-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for o in recent_orders %}
+
+                    {% set order_status = (o.status or 'Pending')|lower %}
+
+                    <tr>
+
+                        <!-- ORDER ID -->
+                        <td>
+                            <span class="recent-order-id">
+                                {{ o.order_ref or ('#' ~ o.id) }}
+                            </span>
+                        </td>
+
+                        <!-- CUSTOMER -->
+                        <td>
+                            <span class="recent-customer">
+                                {{ o.customer_name or 'N/A' }}
+                            </span>
+                        </td>
+
+                        <!-- TOTAL -->
+                        <td>
+                            <span class="recent-total">
+                                ${{ '%.2f'|format(o.total or 0) }}
+                            </span>
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+                            <span class="status-badge
+                                {% if order_status == 'pending' %}
+                                    status-pending
+                                {% elif order_status == 'processing' %}
+                                    status-processing
+                                {% elif order_status == 'shipped' %}
+                                    status-shipped
+                                {% elif order_status == 'completed' %}
+                                    status-completed
+                                {% elif order_status == 'cancelled' %}
+                                    status-cancelled
+                                {% else %}
+                                    status-default
+                                {% endif %}
+                            ">
+                                {{ o.status or 'Pending' }}
+                            </span>
+                        </td>
+
+                        <!-- DATE -->
+                        <td>
+                            <span class="recent-date">
+                                {{ o.created_at or 'N/A' }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <!-- EMPTY STATE -->
+                    <tr>
+                        <td colspan="5" class="dashboard-empty">
+                            <i class="fa-solid fa-box-open"></i>
+                            <p>No orders yet.</p>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
 </div>
-<div class="card shadow-sm"><div class="card-body"><h5>Recent Orders</h5><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>
-{% for o in recent_orders %}<tr><td>{{ o.order_ref or ('#' ~ o.id) }}</td><td>{{ o.customer_name }}</td><td>${{ '%.2f'|format(o.total) }}</td><td><span class="badge bg-secondary">{{ o.status }}</span></td><td>{{ o.created_at or '' }}</td></tr>{% else %}<tr><td colspan="5" class="text-center text-muted">No orders yet.</td></tr>{% endfor %}
-</tbody></table></div></div></div>
+
 {% endblock %}

@@ -1,46 +1,348 @@
-{% extends "front/admin/master.html" %}{% block title %}Orders | VELORA{% endblock %}{% block page_content %}
-    <div class="d-flex justify-content-between mb-4">
-        <div><h2>Orders</h2>
-            <p class="text-muted">Manage customer orders and status.</p></div>
-    </div>
-    <div class="card shadow-sm border-0">
-        <div class="card-body table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Customer</th>
-                    <th>Phone</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Created</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for o in orders %}
-                    <tr>
-                        <td>#{{ o.id }}</td>
-                        <td>{{ o.customer_name }}</td>
-                        <td>{{ o.phone }}</td>
-                        <td>${{ "%.2f"|format(o.total) }}</td>
-                        <td>
-                            <form method="post" action="{{ url_for('admin.update_order_status',id=o.id) }}"><input
-                                    type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="status"
-                                                                                                       class="form-select form-select-sm"
-                                                                                                       onchange="this.form.submit()">
-                                {% for s in ['Pending','Processing','Shipped','Completed','Cancelled'] %}
-                                    <option {{ 'selected' if o.status==s }}>{{ s }}</option>{% endfor %}</select></form>
-                        </td>
-                        <td>{{ o.created_at or '' }}</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td colspan="5" class="small text-muted">{{ o.address }} · {{ o.items|length }} item(s)</td>
-                    </tr>{% else %}
-                    <tr>
-                        <td colspan="6" class="text-center p-4">No orders found.</td>
-                    </tr>{% endfor %}
-                </tbody>
-            </table>
+
+{% extends "front/admin/master.html" %}
+
+{% block title %}Orders | VELORA{% endblock %}
+
+{% block page_content %}
+
+<style>
+    .orders-page {
+        color: #292929;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .orders-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 28px;
+    }
+
+    .orders-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 30px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #292929;
+    }
+
+    .orders-header p {
+        color: #888;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .orders-card {
+        background: #fff;
+        border: 1px solid #eae7e2;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .orders-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #eeeae5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .orders-card-header h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 19px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .orders-count {
+        font-size: 12px;
+        color: #777;
+    }
+
+    .orders-table {
+        margin: 0;
+        min-width: 850px;
+    }
+
+    .orders-table thead th {
+        background: #f5f3ef;
+        color: #555;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 16px 18px;
+        border-bottom: 1px solid #eae7e2;
+        white-space: nowrap;
+    }
+
+    .orders-table tbody td {
+        padding: 17px 18px;
+        font-size: 13px;
+        color: #555;
+        border-bottom: 1px solid #f0eeea;
+        vertical-align: middle;
+    }
+
+    .orders-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .orders-table tbody tr:hover {
+        background: #fcfbf9;
+    }
+
+    .order-id {
+        color: #292929;
+        font-weight: 700;
+    }
+
+    .customer-name {
+        color: #292929;
+        font-weight: 600;
+    }
+
+    .customer-phone {
+        color: #777;
+        font-size: 12px;
+    }
+
+    .order-total {
+        color: #292929;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .order-date {
+        color: #777;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .order-status-form {
+        min-width: 135px;
+    }
+
+    .order-status-select {
+        border: 1px solid #e5e1da;
+        border-radius: 3px;
+        background-color: #fff;
+        color: #555;
+        font-size: 12px;
+        padding: 7px 28px 7px 10px;
+        cursor: pointer;
+        box-shadow: none !important;
+    }
+
+    .order-status-select:focus {
+        border-color: #a89b87;
+    }
+
+    .order-details-row {
+        background: #fcfbf9;
+    }
+
+    .order-details-row td {
+        padding: 12px 18px !important;
+        color: #888 !important;
+        font-size: 12px !important;
+    }
+
+    .order-details-label {
+        color: #555;
+        font-weight: 700;
+    }
+
+    .order-empty {
+        padding: 55px 20px !important;
+        text-align: center;
+    }
+
+    .order-empty i {
+        font-size: 35px;
+        color: #c9c2b8;
+        margin-bottom: 15px;
+    }
+
+    .order-empty h5 {
+        font-family: 'Playfair Display', serif;
+        color: #555;
+        margin-bottom: 7px;
+    }
+
+    .order-empty p {
+        color: #999;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .orders-header {
+            align-items: flex-start;
+        }
+
+        .orders-header h2 {
+            font-size: 25px;
+        }
+
+        .orders-card-header {
+            padding: 16px;
+        }
+    }
+</style>
+
+<div class="orders-page">
+
+    <!-- PAGE HEADER -->
+    <div class="orders-header">
+        <div>
+            <h2>Orders</h2>
+            <p>Manage customer orders and track order status.</p>
         </div>
-    </div>{% endblock %}
+    </div>
+
+    <!-- ORDERS TABLE -->
+    <div class="orders-card">
+
+        <div class="orders-card-header">
+            <h5>All Orders</h5>
+
+            <span class="orders-count">
+                {{ orders|length }} order(s)
+            </span>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table orders-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Order Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for o in orders %}
+
+                    <tr>
+                        <!-- ORDER ID -->
+                        <td>
+                            <span class="order-id">
+                                #{{ o.id }}
+                            </span>
+                        </td>
+
+                        <!-- CUSTOMER -->
+                        <td>
+                            <span class="customer-name">
+                                {{ o.customer_name or 'N/A' }}
+                            </span>
+                        </td>
+
+                        <!-- PHONE -->
+                        <td>
+                            <span class="customer-phone">
+                                {{ o.phone or 'N/A' }}
+                            </span>
+                        </td>
+
+                        <!-- TOTAL -->
+                        <td>
+                            <span class="order-total">
+                                ${{ "%.2f"|format(o.total or 0) }}
+                            </span>
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+                            <form
+                                method="POST"
+                                action="{{ url_for('admin.update_order_status', id=o.id) }}"
+                                class="order-status-form"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                >
+
+                                <select
+                                    name="status"
+                                    class="form-select form-select-sm order-status-select"
+                                    onchange="this.form.submit()"
+                                >
+                                    {% for s in ['Pending', 'Processing', 'Shipped', 'Completed', 'Cancelled'] %}
+                                        <option
+                                            value="{{ s }}"
+                                            {% if (o.status or 'Pending')|lower == s|lower %}selected{% endif %}
+                                        >
+                                            {{ s }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </td>
+
+                        <!-- DATE -->
+                        <td>
+                            <span class="order-date">
+                                {{ o.created_at or 'N/A' }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <!-- ORDER DETAILS -->
+                    <tr class="order-details-row">
+                        <td></td>
+
+                        <td colspan="5">
+                            <span class="order-details-label">
+                                Delivery Address:
+                            </span>
+
+                            {{ o.address or 'No address provided' }}
+
+                            <span class="mx-2">|</span>
+
+                            <span class="order-details-label">
+                                Items:
+                            </span>
+
+                            {{ o.items|length }} item(s)
+                        </td>
+                    </tr>
+
+                    {% else %}
+
+                    <!-- EMPTY STATE -->
+                    <tr>
+                        <td colspan="6" class="order-empty">
+                            <i class="fa-solid fa-box-open"></i>
+
+                            <h5>No Orders Found</h5>
+
+                            <p>
+                                Customer orders will appear here when they place an order.
+                            </p>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

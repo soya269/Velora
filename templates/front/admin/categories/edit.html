@@ -1,19 +1,400 @@
-{% extends "front/admin/master.html" %}{% block title %}Edit Category{% endblock %}{% block page_content %}
-    <div class="card shadow-sm">
-        <div class="card-body"><h2>Edit Category</h2>
-            <form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token"
-                                                                     value="{{ csrf_token() }}">
-                <div class="mb-3"><label class="form-label">Name</label><input name="name" class="form-control"
-                                                                               value="{{ category.name if category else request.form.get('name','') }}"
-                                                                               required></div>
-                <div class="mb-3"><label class="form-label">Image</label><input type="file" name="image"
-                                                                                class="form-control" accept="image/*">
-                </div>
-                <div class="mb-3"><label class="form-label">Description</label><textarea name="description"
-                                                                                         class="form-control"
-                                                                                         rows="4">{{ category.description if category else request.form.get('description','') }}</textarea>
-                </div>
-                <button class="btn btn-primary">Save</button>
-                <a href="{{ url_for('admin.admin_categories') }}" class="btn btn-secondary">Cancel</a></form>
+
+{% extends "front/admin/master.html" %}
+
+{% block title %}Edit Category | VELORA{% endblock %}
+
+{% block page_content %}
+
+<style>
+    .category-form-page {
+        font-family: 'DM Sans', sans-serif;
+        color: #292929;
+    }
+
+    /* PAGE HEADER */
+    .category-form-header {
+        margin-bottom: 28px;
+    }
+
+    .category-form-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 30px;
+        font-weight: 600;
+        color: #292929;
+        margin-bottom: 6px;
+    }
+
+    .category-form-header p {
+        color: #888;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* FORM CARD */
+    .category-form-card {
+        background: #fff;
+        border: 1px solid #eae7e2;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .category-form-card-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid #eeeae5;
+    }
+
+    .category-form-card-header h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 19px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .category-form-card-body {
+        padding: 28px;
+    }
+
+    /* FORM ELEMENTS */
+    .category-form-page .form-label {
+        color: #444;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 9px;
+    }
+
+    .category-form-page .form-control {
+        border: 1px solid #e5e1da;
+        border-radius: 3px;
+        padding: 11px 13px;
+        font-size: 13px;
+        color: #444;
+        background-color: #fff;
+        box-shadow: none;
+    }
+
+    .category-form-page .form-control:focus {
+        border-color: #a89b87;
+        box-shadow: 0 0 0 3px rgba(168, 155, 135, .1);
+    }
+
+    .category-form-page textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-hint {
+        display: block;
+        margin-top: 7px;
+        color: #999;
+        font-size: 11px;
+    }
+
+    /* IMAGE UPLOAD */
+    .category-upload-area {
+        border: 1px dashed #d8d1c7;
+        border-radius: 4px;
+        padding: 22px;
+        background: #fcfbf9;
+    }
+
+    .category-upload-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0ede7;
+        color: #857763;
+        border-radius: 50%;
+        font-size: 19px;
+        margin-bottom: 12px;
+    }
+
+    .category-preview-wrapper {
+        margin-top: 18px;
+    }
+
+    .category-preview-wrapper.hidden {
+        display: none;
+    }
+
+    .category-preview-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 9px;
+    }
+
+    .category-preview-image {
+        width: 130px;
+        height: 130px;
+        object-fit: cover;
+        border: 1px solid #eae7e2;
+        border-radius: 3px;
+        background: #f5f3ef;
+    }
+
+    .current-image-label {
+        display: inline-block;
+        margin-left: 8px;
+        color: #78916e;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* BUTTONS */
+    .category-form-actions {
+        display: flex;
+        gap: 10px;
+        padding-top: 22px;
+        margin-top: 25px;
+        border-top: 1px solid #eeeae5;
+    }
+
+    .btn-category-save {
+        background: #292929;
+        color: #fff;
+        border: 1px solid #292929;
+        border-radius: 3px;
+        padding: 10px 22px;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all .2s ease;
+    }
+
+    .btn-category-save:hover {
+        background: #857763;
+        border-color: #857763;
+        color: #fff;
+    }
+
+    .btn-category-cancel {
+        background: #fff;
+        color: #666;
+        border: 1px solid #e5e1da;
+        border-radius: 3px;
+        padding: 10px 22px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+    .btn-category-cancel:hover {
+        background: #f5f3ef;
+        color: #292929;
+    }
+
+    @media (max-width: 768px) {
+        .category-form-header h2 {
+            font-size: 25px;
+        }
+
+        .category-form-card-body {
+            padding: 18px;
+        }
+
+        .category-form-card-header {
+            padding: 17px 18px;
+        }
+    }
+</style>
+
+<div class="category-form-page">
+
+    <!-- PAGE HEADER -->
+    <div class="category-form-header">
+        <h2>Edit Category</h2>
+        <p>Update your category information and image.</p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="category-form-card">
+
+        <div class="category-form-card-header">
+            <h5>Category Information</h5>
         </div>
-    </div>{% endblock %}
+
+        <div class="category-form-card-body">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                <!-- CSRF TOKEN -->
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <!-- CATEGORY NAME -->
+                <div class="mb-4">
+                    <label for="categoryName" class="form-label">
+                        Category Name <span class="text-danger">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="categoryName"
+                        name="name"
+                        class="form-control"
+                        placeholder="Enter category name"
+                        value="{{ request.form.get('name', category.name or '') }}"
+                        required
+                    >
+
+                    <small class="form-hint">
+                        Enter a clear and recognizable category name.
+                    </small>
+                </div>
+
+                <!-- CATEGORY IMAGE -->
+                <div class="mb-4">
+                    <label for="categoryImage" class="form-label">
+                        Category Image
+                    </label>
+
+                    <div class="category-upload-area">
+
+                        <div class="category-upload-icon">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+
+                        <label for="categoryImage" class="form-label">
+                            Change Category Image
+                        </label>
+
+                        <input
+                            type="file"
+                            id="categoryImage"
+                            name="image"
+                            class="form-control"
+                            accept="image/png, image/jpeg, image/webp"
+                        >
+
+                        <small class="form-hint">
+                            Select a new image only if you want to replace the current one.
+                            Supported formats: JPG, JPEG, PNG, WEBP.
+                        </small>
+
+                        <!-- IMAGE PREVIEW -->
+                        <div
+                            class="category-preview-wrapper {% if not category.image %}hidden{% endif %}"
+                            id="previewWrapper"
+                        >
+                            <div class="category-preview-label">
+                                Image Preview
+
+                                {% if category.image %}
+                                    <span
+                                        class="current-image-label"
+                                        id="currentImageLabel"
+                                    >
+                                        Current Image
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <img
+                                src="{% if category.image %}{{ url_for('static', filename='uploads/categories/' ~ category.image) }}{% endif %}"
+                                id="previewImage"
+                                class="category-preview-image"
+                                alt="Category image preview"
+                            >
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="mb-4">
+                    <label for="categoryDescription" class="form-label">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="categoryDescription"
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Write a short description about this category..."
+                    >{{ request.form.get('description', category.description or '') }}</textarea>
+
+                    <small class="form-hint">
+                        Provide a short description to help identify this category.
+                    </small>
+                </div>
+
+                <!-- FORM ACTIONS -->
+                <div class="category-form-actions">
+
+                    <button
+                        type="submit"
+                        class="btn btn-category-save"
+                    >
+                        <i class="fa-solid fa-check me-2"></i>
+                        Update Category
+                    </button>
+
+                    <a
+                        href="{{ url_for('admin.admin_categories') }}"
+                        class="btn-category-cancel"
+                    >
+                        <i class="fa-solid fa-arrow-left me-2"></i>
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- IMAGE PREVIEW SCRIPT -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const imageInput = document.getElementById('categoryImage');
+        const previewImage = document.getElementById('previewImage');
+        const previewWrapper = document.getElementById('previewWrapper');
+        const currentImageLabel = document.getElementById('currentImageLabel');
+
+        let currentObjectUrl = null;
+
+        imageInput.addEventListener('change', function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file.');
+                this.value = '';
+                return;
+            }
+
+            if (currentObjectUrl) {
+                URL.revokeObjectURL(currentObjectUrl);
+            }
+
+            currentObjectUrl = URL.createObjectURL(file);
+
+            previewImage.src = currentObjectUrl;
+            previewWrapper.classList.remove('hidden');
+
+            if (currentImageLabel) {
+                currentImageLabel.textContent = 'New Image Selected';
+            }
+        });
+
+    });
+</script>
+
+{% endblock %}

@@ -1,732 +1,371 @@
-{##}
-{#{% extends "front/admin/master.html" %}#}
-{##}
-{#{% block title %}Admin Profile | VELORA{% endblock %}#}
-{##}
-{#{% block page_content %}#}
-{##}
-{#<div class="page-title mb-4">#}
-{#    <h2>Admin Profile</h2>#}
-{#    <p class="text-muted">#}
-{#        Manage your administrator account information.#}
-{#    </p>#}
-{#</div>#}
-{##}
-{##}
-{#<div class="row">#}
-{##}
-{#    <!-- Profile Form -->#}
-{#    <div class="col-lg-8">#}
-{##}
-{#        <div class="card shadow-sm border-0">#}
-{##}
-{#            <div class="card-body p-4">#}
-{##}
-{#                <!-- Profile Header -->#}
-{#                <div class="d-flex align-items-center mb-4">#}
-{##}
-{#                    <div#}
-{#                        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"#}
-{#                        style="width:65px;height:65px;font-size:26px;"#}
-{#                    >#}
-{#                        {{#}
-{#                            (#}
-{#                                current_user.get('name')#}
-{#                                or current_user.get('username')#}
-{#                                or 'A'#}
-{#                            )[0]|upper#}
-{#                        }}#}
-{#                    </div>#}
-{##}
-{#                    <div>#}
-{##}
-{#                        <h4 class="mb-1">#}
-{#                            {{#}
-{#                                current_user.get(#}
-{#                                    'name',#}
-{#                                    current_user.get('username', 'Admin')#}
-{#                                )#}
-{#                            }}#}
-{#                        </h4>#}
-{##}
-{#                        <span class="badge bg-primary">#}
-{#                            Administrator#}
-{#                        </span>#}
-{##}
-{#                    </div>#}
-{##}
-{#                </div>#}
-{##}
-{##}
-{#                <!-- Success / Error Messages -->#}
-{#                {% with messages = get_flashed_messages(with_categories=true) %}#}
-{##}
-{#                    {% if messages %}#}
-{##}
-{#                        {% for category, message in messages %}#}
-{##}
-{#                            <div class="alert alert-{{ category }} alert-dismissible fade show">#}
-{##}
-{#                                {{ message }}#}
-{##}
-{#                                <button#}
-{#                                    type="button"#}
-{#                                    class="btn-close"#}
-{#                                    data-bs-dismiss="alert"#}
-{#                                ></button>#}
-{##}
-{#                            </div>#}
-{##}
-{#                        {% endfor %}#}
-{##}
-{#                    {% endif %}#}
-{##}
-{#                {% endwith %}#}
-{##}
-{##}
-{#                <!-- Profile Form -->#}
-{#                <form#}
-{#                    method="POST"#}
-{#                    action="{{ url_for('admin.admin_profile') }}"#}
-{#                >#}
-{##}
-{#                    <!-- CSRF -->#}
-{#                    <input#}
-{#                        type="hidden"#}
-{#                        name="csrf_token"#}
-{#                        value="{{ csrf_token() }}"#}
-{#                    >#}
-{##}
-{##}
-{#                    <!-- Name -->#}
-{#                    <div class="mb-3">#}
-{##}
-{#                        <label class="form-label fw-semibold">#}
-{#                            Name#}
-{#                        </label>#}
-{##}
-{#                        <input#}
-{#                            type="text"#}
-{#                            name="name"#}
-{#                            class="form-control"#}
-{#                            value="{{ current_user.get('name', '') }}"#}
-{#                            placeholder="Enter your name"#}
-{#                            required#}
-{#                        >#}
-{##}
-{#                    </div>#}
-{##}
-{##}
-{#                    <!-- Username -->#}
-{#                    <div class="mb-3">#}
-{##}
-{#                        <label class="form-label fw-semibold">#}
-{#                            Username#}
-{#                        </label>#}
-{##}
-{#                        <input#}
-{#                            type="text"#}
-{#                            name="username"#}
-{#                            class="form-control"#}
-{#                            value="{{ current_user.get('username', '') }}"#}
-{#                            placeholder="Enter your username"#}
-{#                            required#}
-{#                        >#}
-{##}
-{#                    </div>#}
-{##}
-{##}
-{#                    <!-- Role -->#}
-{#                    <div class="mb-3">#}
-{##}
-{#                        <label class="form-label fw-semibold">#}
-{#                            Role#}
-{#                        </label>#}
-{##}
-{#                        <input#}
-{#                            type="text"#}
-{#                            class="form-control"#}
-{#                            value="Administrator"#}
-{#                            readonly#}
-{#                        >#}
-{##}
-{#                    </div>#}
-{##}
-{##}
-{#                    <!-- Buttons -->#}
-{#                    <div class="mt-4">#}
-{##}
-{#                        <button#}
-{#                            type="submit"#}
-{#                            class="btn btn-primary"#}
-{#                        >#}
-{#                            <i class="fa-solid fa-save me-1"></i>#}
-{#                            Save Changes#}
-{#                        </button>#}
-{##}
-{#                        <a#}
-{#                            href="{{ url_for('admin.admin_dashboard') }}"#}
-{#                            class="btn btn-secondary ms-2"#}
-{#                        >#}
-{#                            <i class="fa-solid fa-arrow-left me-1"></i>#}
-{#                            Back#}
-{#                        </a>#}
-{##}
-{#                    </div>#}
-{##}
-{#                </form>#}
-{##}
-{#            </div>#}
-{##}
-{#        </div>#}
-{##}
-{#    </div>#}
-{##}
-{##}
-{#    <!-- Account Information -->#}
-{#    <div class="col-lg-4">#}
-{##}
-{#        <div class="card shadow-sm border-0">#}
-{##}
-{#            <div class="card-body p-4">#}
-{##}
-{#                <h5 class="mb-4">#}
-{#                    Account Information#}
-{#                </h5>#}
-{##}
-{##}
-{#                <div class="d-flex align-items-center mb-4">#}
-{##}
-{#                    <i class="fa-solid fa-user-shield fa-lg me-3"></i>#}
-{##}
-{#                    <div>#}
-{##}
-{#                        <small class="text-muted d-block">#}
-{#                            Account Type#}
-{#                        </small>#}
-{##}
-{#                        <strong>#}
-{#                            Administrator#}
-{#                        </strong>#}
-{##}
-{#                    </div>#}
-{##}
-{#                </div>#}
-{##}
-{##}
-{#                <div class="d-flex align-items-center mb-4">#}
-{##}
-{#                    <i class="fa-solid fa-circle-check fa-lg me-3"></i>#}
-{##}
-{#                    <div>#}
-{##}
-{#                        <small class="text-muted d-block">#}
-{#                            Status#}
-{#                        </small>#}
-{##}
-{#                        <strong class="text-success">#}
-{#                            Active#}
-{#                        </strong>#}
-{##}
-{#                    </div>#}
-{##}
-{#                </div>#}
-{##}
-{##}
-{#                <div class="d-flex align-items-center">#}
-{##}
-{#                    <i class="fa-solid fa-shield-halved fa-lg me-3"></i>#}
-{##}
-{#                    <div>#}
-{##}
-{#                        <small class="text-muted d-block">#}
-{#                            Access#}
-{#                        </small>#}
-{##}
-{#                        <strong>#}
-{#                            Admin Panel#}
-{#                        </strong>#}
-{##}
-{#                    </div>#}
-{##}
-{#                </div>#}
-{##}
-{#            </div>#}
-{##}
-{#        </div>#}
-{##}
-{#    </div>#}
-{##}
-{#</div>#}
-{##}
-{#{% endblock %}#}
-{##}
+
 {% extends "front/admin/master.html" %}
 
 {% block title %}Admin Profile | VELORA{% endblock %}
 
-{% block page_content %}
-
-{% set profile_image =
-    current_user.get('image')
-    or current_user.get('profile')
-%}
-
-
+{% block extra_css %}
 <style>
-
 /* ==========================================
-   PROFILE PAGE
+   VELORA ADMIN PROFILE
 ========================================== */
 
 .profile-page {
-
     max-width: 1200px;
-
     margin: 0 auto;
+    font-family: 'DM Sans', sans-serif;
 }
-
-
-/* ==========================================
-   PROFILE HEADER CARD
-========================================== */
-
-.profile-main-card {
-
-    background: #ffffff;
-
-    border: 1px solid #edf0f5;
-
-    border-radius: 16px;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 6px 24px rgba(0, 0, 0, 0.06);
-}
-
 
 /* ==========================================
    PROFILE HEADER
 ========================================== */
 
-.profile-header {
-
-    padding: 28px 32px;
-
-    border-bottom: 1px solid #edf0f5;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 18px;
+.profile-main-card,
+.account-card {
+    background: #ffffff;
+    border: 1px solid #eae7e2;
+    border-radius: 3px;
 }
 
+.profile-main-card {
+    overflow: hidden;
+}
 
-/* ==========================================
-   PROFILE IMAGE
-========================================== */
+.profile-header {
+    padding: 30px;
+    border-bottom: 1px solid #eae7e2;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #ffffff;
+}
+
+.profile-image,
+.profile-letter {
+    width: 90px;
+    height: 90px;
+    min-width: 90px;
+    border-radius: 50%;
+}
 
 .profile-image {
-
-    width: 88px;
-
-    height: 88px;
-
-    min-width: 88px;
-
-    border-radius: 50%;
-
     object-fit: cover;
-
-    border: 3px solid #ffffff;
-
-    box-shadow:
-        0 3px 14px rgba(0, 0, 0, 0.12);
+    border: 3px solid #f5f3ef;
 }
-
-
-/* ==========================================
-   PROFILE LETTER
-========================================== */
 
 .profile-letter {
-
-    width: 88px;
-
-    height: 88px;
-
-    min-width: 88px;
-
-    border-radius: 50%;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
-    background: #1769ff;
-
-    color: white;
-
+    background: #857763;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
     font-size: 34px;
-
-    font-weight: 600;
-
-    box-shadow:
-        0 3px 14px rgba(23, 105, 255, 0.25);
 }
-
-
-/* ==========================================
-   PROFILE NAME
-========================================== */
 
 .profile-name {
-
+    font-family: 'Playfair Display', serif;
     font-size: 25px;
-
     font-weight: 600;
-
-    color: #172033;
-
+    color: #292929;
     margin-bottom: 6px;
+    overflow-wrap: anywhere;
 }
-
 
 .profile-subtitle {
-
-    color: #7a8494;
-
-    font-size: 14px;
+    color: #888888;
+    font-size: 12px;
+    letter-spacing: .5px;
 }
 
-
 /* ==========================================
-   FORM SECTION
+   PROFILE FORM
 ========================================== */
 
 .profile-form {
-
-    padding: 30px 32px;
+    padding: 30px;
 }
 
-
-/* ==========================================
-   FORM LABEL
-========================================== */
-
 .profile-label {
-
-    font-size: 14px;
-
+    display: block;
+    font-size: 12px;
     font-weight: 600;
-
-    color: #263143;
-
+    color: #4d4943;
     margin-bottom: 8px;
 }
 
-
-/* ==========================================
-   FORM INPUT
-========================================== */
-
 .profile-form .form-control {
-
-    min-height: 46px;
-
-    border: 1px solid #dfe4ec;
-
-    border-radius: 9px;
-
-    font-size: 14px;
-
+    min-height: 43px;
+    border: 1px solid #eae7e2;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #292929;
     box-shadow: none;
 }
 
-
-.profile-form .form-control:focus {
-
-    border-color: #1769ff;
-
-    box-shadow:
-        0 0 0 3px rgba(23, 105, 255, 0.10);
+.profile-form textarea.form-control {
+    min-height: 100px;
 }
 
+.profile-form .form-control:focus {
+    border-color: #b5a58e;
+    box-shadow: 0 0 0 3px rgba(133, 119, 99, .08);
+}
+
+.profile-form .form-control[readonly] {
+    background: #f7f6f3;
+    color: #77716a;
+}
 
 /* ==========================================
    IMAGE UPLOAD
 ========================================== */
 
 .image-upload-box {
-
     display: flex;
-
     align-items: center;
-
     gap: 20px;
-
-    padding: 18px;
-
-    border: 1px dashed #d5dce7;
-
-    border-radius: 12px;
-
-    background: #fafbfc;
+    padding: 20px;
+    border: 1px dashed #d8d1c6;
+    border-radius: 3px;
+    background: #faf9f6;
 }
 
+.image-preview,
+.image-placeholder {
+    width: 90px;
+    height: 90px;
+    min-width: 90px;
+    border-radius: 50%;
+}
 
 .image-preview {
-
-    width: 90px;
-
-    height: 90px;
-
-    min-width: 90px;
-
-    border-radius: 50%;
-
     object-fit: cover;
-
-    border: 2px solid #e1e6ee;
+    border: 2px solid #eae7e2;
 }
-
 
 .image-placeholder {
-
-    width: 90px;
-
-    height: 90px;
-
-    min-width: 90px;
-
-    border-radius: 50%;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
-    background: #eef3ff;
-
-    color: #1769ff;
-
-    font-size: 28px;
+    background: #f0ece5;
+    color: #857763;
+    font-size: 27px;
 }
 
+.image-upload-box input[type="file"] {
+    min-height: auto;
+    padding: 10px;
+    background: #ffffff;
+}
+
+.upload-help {
+    display: block;
+    margin-top: 9px;
+    color: #999188;
+    font-size: 11px;
+    line-height: 1.6;
+}
 
 /* ==========================================
-   ACCOUNT CARD
+   ACCOUNT INFORMATION
 ========================================== */
 
 .account-card {
-
-    background: #ffffff;
-
-    border: 1px solid #edf0f5;
-
-    border-radius: 16px;
-
-    padding: 28px;
-
-    box-shadow:
-        0 6px 24px rgba(0, 0, 0, 0.06);
+    padding: 25px;
 }
-
 
 .account-title {
-
+    font-family: 'Playfair Display', serif;
     font-size: 20px;
-
     font-weight: 600;
-
-    color: #172033;
-
-    margin-bottom: 24px;
+    color: #292929;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eae7e2;
 }
-
-
-/* ==========================================
-   ACCOUNT ITEM
-========================================== */
 
 .account-item {
-
     display: flex;
-
     align-items: center;
-
-    gap: 14px;
-
-    padding: 14px 0;
-
-    border-bottom: 1px solid #f0f2f5;
+    gap: 13px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0eeea;
 }
 
-
 .account-item:last-child {
-
     border-bottom: none;
 }
 
-
 .account-icon {
-
     width: 42px;
-
     height: 42px;
-
     min-width: 42px;
-
-    border-radius: 10px;
-
+    border-radius: 3px;
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
-    background: #f0f5ff;
-
-    color: #1769ff;
+    background: #f5f3ef;
+    color: #857763;
+    font-size: 15px;
 }
-
 
 .account-label {
-
     display: block;
-
-    font-size: 12px;
-
-    color: #8a93a2;
-
-    margin-bottom: 3px;
+    font-size: 11px;
+    color: #999188;
+    margin-bottom: 4px;
 }
-
 
 .account-value {
-
     display: block;
-
-    font-size: 14px;
-
+    font-size: 12px;
     font-weight: 600;
-
-    color: #202938;
-
-    word-break: break-word;
+    color: #38342f;
+    overflow-wrap: anywhere;
 }
-
-
-/* ==========================================
-   STATUS
-========================================== */
 
 .status-active {
-
-    color: #198754;
+    color: #66866d;
 }
-
 
 /* ==========================================
    BUTTONS
 ========================================== */
 
 .profile-actions {
-
     display: flex;
-
     align-items: center;
-
+    flex-wrap: wrap;
     gap: 10px;
-
     margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eae7e2;
 }
-
 
 .profile-actions .btn {
-
-    min-height: 44px;
-
-    border-radius: 8px;
-
-    padding: 0 18px;
-
-    font-size: 14px;
-
-    font-weight: 500;
+    min-height: 42px;
+    padding: 9px 18px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
+.profile-save-btn {
+    background: #857763;
+    border: 1px solid #857763;
+    color: #ffffff;
+}
+
+.profile-save-btn:hover {
+    background: #6e604e;
+    border-color: #6e604e;
+    color: #ffffff;
+}
+
+.profile-back-btn {
+    background: #ffffff;
+    border: 1px solid #d9d3ca;
+    color: #625b50;
+}
+
+.profile-back-btn:hover {
+    background: #f5f3ef;
+    border-color: #b5a58e;
+    color: #292929;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 991px) {
+    .profile-header {
+        padding: 24px;
+    }
+
+    .profile-form {
+        padding: 24px;
+    }
+
+    .account-card {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-header {
+        padding: 20px;
+        gap: 14px;
+    }
+
+    .profile-image,
+    .profile-letter {
+        width: 70px;
+        height: 70px;
+        min-width: 70px;
+    }
+
+    .profile-letter {
+        font-size: 27px;
+    }
+
+    .profile-name {
+        font-size: 20px;
+    }
+
+    .profile-form {
+        padding: 20px;
+    }
+
+    .image-upload-box {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .profile-actions .btn {
+        width: 100%;
+    }
+}
 </style>
+{% endblock %}
+
+
+{% block page_content %}
+
+{% set profile_image = current_user.get('image') or current_user.get('profile') %}
+{% set display_name = current_user.get('name') or current_user.get('username') or 'Administrator' %}
 
 
 <div class="profile-page">
 
-
-    <!-- ====================================== -->
-    <!-- PAGE TITLE -->
-    <!-- ====================================== -->
+    <!-- ======================================
+         PAGE TITLE
+    ======================================= -->
 
     <div class="page-title mb-4">
-
-        <h2>
-            Admin Profile
-        </h2>
-
-        <p class="text-muted">
-            Manage your administrator account information.
-        </p>
-
+        <h2>Admin Profile</h2>
+        <p>Manage your administrator account information.</p>
     </div>
 
 
-    <!-- ====================================== -->
-    <!-- FLASH MESSAGES -->
-    <!-- ====================================== -->
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-
-        {% if messages %}
-
-            {% for category, message in messages %}
-
-                <div
-                    class="alert alert-{{ category }} alert-dismissible fade show"
-                    role="alert"
-                >
-
-                    {{ message }}
-
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                    ></button>
-
-                </div>
-
-            {% endfor %}
-
-        {% endif %}
-
-    {% endwith %}
 
 
     <div class="row g-4">
 
-
-        <!-- ====================================== -->
-        <!-- PROFILE FORM -->
-        <!-- ====================================== -->
+        <!-- ======================================
+             PROFILE FORM
+        ======================================= -->
 
         <div class="col-lg-8">
 
             <div class="profile-main-card">
-
 
                 <!-- PROFILE HEADER -->
 
@@ -736,69 +375,38 @@
 
                         <img
                             src="{{ url_for('static', filename=profile_image) }}"
-                            alt="Administrator"
+                            alt="Administrator Profile"
                             class="profile-image"
                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                         >
 
-                        <div
-                            class="profile-letter"
-                            style="display:none;"
-                        >
-                            {{
-                                (
-                                    current_user.get('name')
-                                    or current_user.get('username')
-                                    or 'A'
-                                )[0]|upper
-                            }}
+                        <div class="profile-letter" style="display:none;">
+                            {{ display_name[0]|upper }}
                         </div>
 
                     {% else %}
 
                         <div class="profile-letter">
-
-                            {{
-                                (
-                                    current_user.get('name')
-                                    or current_user.get('username')
-                                    or 'A'
-                                )[0]|upper
-                            }}
-
+                            {{ display_name[0]|upper }}
                         </div>
 
                     {% endif %}
 
-
                     <div>
-
                         <div class="profile-name">
-
-                            {{
-                                current_user.get(
-                                    'name',
-                                    current_user.get(
-                                        'username',
-                                        'Administrator'
-                                    )
-                                )
-                            }}
-
+                            {{ display_name }}
                         </div>
 
                         <div class="profile-subtitle">
-
-                            Administrator Account
-
+                            <i class="fa-solid fa-shield-halved me-1"></i>
+                            VELORA Administrator Account
                         </div>
-
                     </div>
 
                 </div>
 
 
-                <!-- FORM -->
+                <!-- PROFILE FORM -->
 
                 <div class="profile-form">
 
@@ -808,8 +416,7 @@
                         enctype="multipart/form-data"
                     >
 
-
-                        <!-- CSRF -->
+                        <!-- CSRF TOKEN -->
 
                         <input
                             type="hidden"
@@ -826,9 +433,7 @@
                                 Profile Image
                             </label>
 
-
                             <div class="image-upload-box">
-
 
                                 {% if profile_image %}
 
@@ -836,11 +441,13 @@
                                         src="{{ url_for('static', filename=profile_image) }}"
                                         alt="Current Profile"
                                         class="image-preview"
-                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                        id="profilePreview"
+                                        onerror="this.style.display='none'; document.getElementById('imagePlaceholder').style.display='flex';"
                                     >
 
                                     <div
                                         class="image-placeholder"
+                                        id="imagePlaceholder"
                                         style="display:none;"
                                     >
                                         <i class="fa-solid fa-user"></i>
@@ -848,29 +455,36 @@
 
                                 {% else %}
 
-                                    <div class="image-placeholder">
-
+                                    <div
+                                        class="image-placeholder"
+                                        id="imagePlaceholder"
+                                    >
                                         <i class="fa-solid fa-user"></i>
-
                                     </div>
 
-                                {% endif %}
+                                    <img
+                                        src=""
+                                        alt="New Profile Preview"
+                                        class="image-preview"
+                                        id="profilePreview"
+                                        style="display:none;"
+                                    >
 
+                                {% endif %}
 
                                 <div class="flex-grow-1">
 
                                     <input
                                         type="file"
                                         name="profile_image"
+                                        id="profileImageInput"
                                         class="form-control"
                                         accept=".jpg,.jpeg,.png,.gif,.webp"
                                     >
 
-                                    <small class="text-muted d-block mt-2">
-
+                                    <small class="upload-help">
                                         JPG, JPEG, PNG, GIF or WEBP.
-                                        Choose a new image to update your profile.
-
+                                        Select a new image to update your profile.
                                     </small>
 
                                 </div>
@@ -880,7 +494,7 @@
                         </div>
 
 
-                        <!-- NAME -->
+                        <!-- FULL NAME -->
 
                         <div class="mb-3">
 
@@ -892,8 +506,8 @@
                                 type="text"
                                 name="name"
                                 class="form-control"
-                                value="{{ current_user.get('name', '') }}"
-                                placeholder="Enter your name"
+                                value="{{ request.form.get('name', current_user.get('name', '')) }}"
+                                placeholder="Enter your full name"
                                 required
                             >
 
@@ -912,7 +526,7 @@
                                 type="text"
                                 name="username"
                                 class="form-control"
-                                value="{{ current_user.get('username', '') }}"
+                                value="{{ request.form.get('username', current_user.get('username', '')) }}"
                                 placeholder="Enter your username"
                                 required
                             >
@@ -935,6 +549,10 @@
                                 readonly
                             >
 
+                            <small class="upload-help">
+                                Your registered email address cannot be changed here.
+                            </small>
+
                         </div>
 
 
@@ -949,7 +567,7 @@
                             <input
                                 type="text"
                                 class="form-control"
-                                value="Administrator"
+                                value="{{ current_user.get('role', 'admin')|capitalize }}"
                                 readonly
                             >
 
@@ -962,25 +580,18 @@
 
                             <button
                                 type="submit"
-                                class="btn btn-primary"
+                                class="btn profile-save-btn"
                             >
-
-                                <i class="fa-solid fa-floppy-disk me-1"></i>
-
+                                <i class="fa-solid fa-floppy-disk me-2"></i>
                                 Save Changes
-
                             </button>
-
 
                             <a
                                 href="{{ url_for('admin.admin_dashboard') }}"
-                                class="btn btn-secondary"
+                                class="btn profile-back-btn"
                             >
-
-                                <i class="fa-solid fa-arrow-left me-1"></i>
-
-                                Back
-
+                                <i class="fa-solid fa-arrow-left me-2"></i>
+                                Back to Dashboard
                             </a>
 
                         </div>
@@ -994,9 +605,9 @@
         </div>
 
 
-        <!-- ====================================== -->
-        <!-- ACCOUNT INFORMATION -->
-        <!-- ====================================== -->
+        <!-- ======================================
+             ACCOUNT INFORMATION
+        ======================================= -->
 
         <div class="col-lg-4">
 
@@ -1012,21 +623,17 @@
                 <div class="account-item">
 
                     <div class="account-icon">
-
                         <i class="fa-solid fa-user-shield"></i>
-
                     </div>
 
                     <div>
-
                         <span class="account-label">
                             Account Type
                         </span>
 
                         <span class="account-value">
-                            Administrator
+                            {{ current_user.get('role', 'admin')|capitalize }}
                         </span>
-
                     </div>
 
                 </div>
@@ -1037,13 +644,10 @@
                 <div class="account-item">
 
                     <div class="account-icon">
-
                         <i class="fa-solid fa-circle-check"></i>
-
                     </div>
 
                     <div>
-
                         <span class="account-label">
                             Status
                         </span>
@@ -1051,7 +655,6 @@
                         <span class="account-value status-active">
                             Active
                         </span>
-
                     </div>
 
                 </div>
@@ -1062,13 +665,10 @@
                 <div class="account-item">
 
                     <div class="account-icon">
-
                         <i class="fa-solid fa-shield-halved"></i>
-
                     </div>
 
                     <div>
-
                         <span class="account-label">
                             Access
                         </span>
@@ -1076,7 +676,6 @@
                         <span class="account-value">
                             Admin Panel
                         </span>
-
                     </div>
 
                 </div>
@@ -1087,13 +686,10 @@
                 <div class="account-item">
 
                     <div class="account-icon">
-
                         <i class="fa-solid fa-at"></i>
-
                     </div>
 
                     <div>
-
                         <span class="account-label">
                             Username
                         </span>
@@ -1101,7 +697,6 @@
                         <span class="account-value">
                             {{ current_user.get('username', 'admin') }}
                         </span>
-
                     </div>
 
                 </div>
@@ -1112,21 +707,17 @@
                 <div class="account-item">
 
                     <div class="account-icon">
-
                         <i class="fa-solid fa-envelope"></i>
-
                     </div>
 
                     <div>
-
                         <span class="account-label">
-                            Email
+                            Email Address
                         </span>
 
                         <span class="account-value">
                             {{ current_user.get('email', 'Not available') }}
                         </span>
-
                     </div>
 
                 </div>
@@ -1138,5 +729,60 @@
     </div>
 
 </div>
+
+
+<!-- ======================================
+     PROFILE IMAGE PREVIEW
+====================================== -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const imageInput = document.getElementById("profileImageInput");
+    const preview = document.getElementById("profilePreview");
+    const placeholder = document.getElementById("imagePlaceholder");
+
+    if (!imageInput || !preview) {
+        return;
+    }
+
+    imageInput.addEventListener("change", function () {
+
+        const file = this.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Please select a valid JPG, PNG, GIF or WEBP image.");
+            this.value = "";
+            return;
+        }
+
+        const imageUrl = URL.createObjectURL(file);
+
+        preview.src = imageUrl;
+        preview.style.display = "block";
+
+        if (placeholder) {
+            placeholder.style.display = "none";
+        }
+
+        preview.onload = function () {
+            URL.revokeObjectURL(imageUrl);
+        };
+
+    });
+
+});
+</script>
 
 {% endblock %}

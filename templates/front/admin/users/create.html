@@ -1,303 +1,562 @@
+
 {% extends "front/admin/master.html" %}
 
-{% block title %}
-    Add User
-{% endblock %}
+{% block title %}Add User{% endblock %}
 
 {% block page_content %}
 
-    <div class="page-title mb-4">
-        <h2>Add User</h2>
+<style>
+    /* ==========================================
+       ADD USER PAGE
+    ========================================== */
 
-        <p class="text-muted">
-            Create a new user account
-        </p>
+    .user-form-page {
+        width: 100%;
+    }
+
+    .user-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .user-page-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        font-weight: 600;
+        color: #252525;
+        margin-bottom: 5px;
+    }
+
+    .user-page-header p {
+        color: #888;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .back-btn {
+        background: #f2f0eb;
+        color: #665b4c;
+        border: 1px solid #e5e0d7;
+        padding: 10px 17px;
+        border-radius: 3px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .25s ease;
+        white-space: nowrap;
+    }
+
+    .back-btn:hover {
+        background: #b7a58a;
+        border-color: #b7a58a;
+        color: #fff;
+    }
+
+    /* ==========================================
+       FORM CARD
+    ========================================== */
+
+    .user-form-card {
+        background: #fff;
+        border: 1px solid #eaeaea;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, .035);
+    }
+
+    .user-form-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #eee;
+        background: #fff;
+    }
+
+    .user-form-card-header h5 {
+        color: #252525;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .user-form-card-header p {
+        color: #999;
+        font-size: 12px;
+        margin: 5px 0 0;
+    }
+
+    .user-form-card-body {
+        padding: 28px;
+    }
+
+    /* ==========================================
+       PROFILE IMAGE
+    ========================================== */
+
+    .profile-upload-section {
+        text-align: center;
+        padding: 10px 0 25px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .profile-preview {
+        width: 125px;
+        height: 125px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #e8e2d8;
+        padding: 3px;
+        background: #fff;
+        display: block;
+        margin: 0 auto 15px;
+    }
+
+    .profile-upload-label {
+        display: block;
+        color: #333;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .profile-upload-help {
+        display: block;
+        color: #999;
+        font-size: 11px;
+        margin-top: 7px;
+    }
+
+    /* ==========================================
+       FORM FIELDS
+    ========================================== */
+
+    .user-form-label {
+        display: block;
+        color: #444;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .user-form-label .required {
+        color: #c44e45;
+    }
+
+    .user-form-control {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #e5e2dc;
+        border-radius: 3px;
+        padding: 10px 13px;
+        color: #333;
+        font-size: 13px;
+        background: #fff;
+        transition: .2s ease;
+    }
+
+    .user-form-control:focus {
+        outline: none;
+        border-color: #b7a58a;
+        box-shadow: 0 0 0 3px rgba(183, 165, 138, .12);
+    }
+
+    .user-form-control::placeholder {
+        color: #aaa;
+    }
+
+    .form-group {
+        margin-bottom: 21px;
+    }
+
+    .form-section-title {
+        color: #252525;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* ==========================================
+       FORM BUTTONS
+    ========================================== */
+
+    .user-form-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 22px;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
+    }
+
+    .save-user-btn {
+        background: #252525;
+        color: #fff;
+        border: 1px solid #252525;
+        padding: 11px 22px;
+        border-radius: 3px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .25s ease;
+    }
+
+    .save-user-btn:hover {
+        background: #b7a58a;
+        border-color: #b7a58a;
+        color: #fff;
+    }
+
+    .cancel-user-btn {
+        background: #f2f0eb;
+        color: #665b4c;
+        border: 1px solid #e5e0d7;
+        padding: 11px 22px;
+        border-radius: 3px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: .25s ease;
+    }
+
+    .cancel-user-btn:hover {
+        background: #ddd8ce;
+        color: #333;
+    }
+
+    @media (max-width: 768px) {
+        .user-page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .user-page-header h2 {
+            font-size: 23px;
+        }
+
+        .user-form-card-body {
+            padding: 18px;
+        }
+
+        .user-form-footer {
+            flex-direction: column;
+        }
+
+        .user-form-footer button,
+        .user-form-footer a {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+
+<div class="user-form-page">
+
+    <!-- ==========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="user-page-header">
+
+        <div>
+            <h2>Add User</h2>
+            <p>Create a new user account for your system.</p>
+        </div>
+
+        <a href="{{ url_for('admin.admin_users') }}"
+           class="back-btn">
+
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back to Users
+
+        </a>
+
     </div>
 
 
-    <!-- =========================
-         CARD
-    ========================== -->
+    <!-- ==========================================
+         USER FORM CARD
+    ========================================== -->
 
-    <div class="card shadow-sm">
+    <div class="user-form-card">
 
-        <div class="card-body">
+        <div class="user-form-card-header">
+
+            <h5>
+                <i class="fa-solid fa-user-plus me-2"></i>
+                User Information
+            </h5>
+
+            <p>Enter the user's details below.</p>
+
+        </div>
+
+
+        <div class="user-form-card-body">
 
             <form
-                    method="POST"
-                    action="{{ url_for('admin.create_user') }}"
-                    enctype="multipart/form-data"
+                method="POST"
+                action="{{ url_for('admin.create_user') }}"
+                enctype="multipart/form-data"
             >
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                <!-- =========================
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <!-- ==================================
                      PROFILE IMAGE
-                ========================== -->
+                =================================== -->
 
-                <div class="text-center mb-4">
+                <div class="profile-upload-section">
 
                     <img
-                            id="previewImage"
-                            src="{{ url_for(
-                        'static',
-                        filename='uploads/users/no-images.jpg'
-                    ) }}"
-                            width="120"
-                            height="120"
-                            class="user-preview"
-                            style="
-                        width: 120px;
-                        height: 120px;
-                        object-fit: cover;
-                        border-radius: 50%;
-                        border: 2px solid #ddd;
-                    "
-                            alt="Profile Image"
+                        id="previewImage"
+                        src="{{ url_for('static', filename='uploads/users/no-images.jpg') }}"
+                        alt="Profile Preview"
+                        class="profile-preview"
                     >
 
-                    <div class="mt-3">
+                    <label for="profile" class="profile-upload-label">
+                        Profile Image
+                    </label>
 
-                        <label
-                                for="profile"
-                                class="form-label"
-                        >
-                            Profile Image
-                        </label>
+                    <input
+                        type="file"
+                        name="profile"
+                        id="profile"
+                        class="form-control"
+                        accept=".jpg,.jpeg,.png,.gif,.webp"
+                    >
 
-                        <input
-                                type="file"
-                                name="profile"
-                                id="profile"
-                                class="form-control"
-                                accept=".jpg,.jpeg,.png,.gif,.webp"
-                        >
+                    <small class="profile-upload-help">
+                        Optional. Supported formats: JPG, JPEG, PNG, GIF and WEBP.
+                    </small>
 
-                        <small class="text-muted">
-                            Optional profile image.
-                        </small>
+                </div>
+
+
+                <!-- ==================================
+                     PERSONAL INFORMATION
+                =================================== -->
+
+                <h6 class="form-section-title">
+                    <i class="fa-solid fa-id-card me-2"></i>
+                    Personal Information
+                </h6>
+
+
+                <div class="row">
+
+                    <!-- FULL NAME -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="name" class="user-form-label">
+                                Full Name <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                class="user-form-control"
+                                placeholder="Enter full name"
+                                value="{{ request.form.get('name', '') }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- USERNAME -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="username" class="user-form-label">
+                                Username <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="username"
+                                id="username"
+                                class="user-form-control"
+                                placeholder="Enter username"
+                                value="{{ request.form.get('username', '') }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="email" class="user-form-label">
+                                Email Address <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                class="user-form-control"
+                                placeholder="Enter email address"
+                                value="{{ request.form.get('email', '') }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="password" class="user-form-label">
+                                Password <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="user-form-control"
+                                placeholder="Enter password"
+                                required
+                            >
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                <!-- =========================
-                     FULL NAME
-                ========================== -->
+                <!-- ==================================
+                     ACCOUNT SETTINGS
+                =================================== -->
 
-                <div class="mb-3">
-
-                    <label
-                            for="name"
-                            class="form-label"
-                    >
-                        Full Name
-                    </label>
-
-                    <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            class="form-control"
-                            placeholder="Enter full name"
-                            value="{{ request.form.get('name', '') }}"
-                            required
-                    >
-
-                </div>
+                <h6 class="form-section-title mt-3">
+                    <i class="fa-solid fa-gear me-2"></i>
+                    Account Settings
+                </h6>
 
 
-                <!-- =========================
-                     USERNAME
-                ========================== -->
+                <div class="row">
 
-                <div class="mb-3">
+                    <!-- ROLE -->
+                    <div class="col-md-6">
 
-                    <label
-                            for="username"
-                            class="form-label"
-                    >
-                        Username
-                    </label>
+                        <div class="form-group">
 
-                    <input
-                            type="text"
-                            name="username"
-                            id="username"
-                            class="form-control"
-                            placeholder="Enter username"
-                            value="{{ request.form.get('username', '') }}"
-                            required
-                    >
+                            <label for="role" class="user-form-label">
+                                User Role <span class="required">*</span>
+                            </label>
 
-                </div>
+                            {% set selected_role = request.form.get('role', 'Staff') %}
 
+                            <select
+                                name="role"
+                                id="role"
+                                class="user-form-control"
+                                required
+                            >
 
-                <!-- =========================
-                     EMAIL
-                ========================== -->
+                                <option value="Staff"
+                                    {% if selected_role|lower == 'staff' %}selected{% endif %}>
+                                    Staff
+                                </option>
 
-                <div class="mb-3">
+                                <option value="Admin"
+                                    {% if selected_role|lower == 'admin' %}selected{% endif %}>
+                                    Admin
+                                </option>
 
-                    <label
-                            for="email"
-                            class="form-label"
-                    >
-                        Email
-                    </label>
+                            </select>
 
-                    <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            class="form-control"
-                            placeholder="Enter email"
-                            value="{{ request.form.get('email', '') }}"
-                            required
-                    >
+                        </div>
 
-                </div>
+                    </div>
 
 
-                <!-- =========================
-                     PASSWORD
-                ========================== -->
+                    <!-- STATUS -->
+                    <div class="col-md-6">
 
-                <div class="mb-3">
+                        <div class="form-group">
 
-                    <label
-                            for="password"
-                            class="form-label"
-                    >
-                        Password
-                    </label>
+                            <label for="status" class="user-form-label">
+                                Account Status <span class="required">*</span>
+                            </label>
 
-                    <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            class="form-control"
-                            placeholder="Enter password"
-                            required
-                    >
+                            {% set selected_status = request.form.get('status', 'Active') %}
+
+                            <select
+                                name="status"
+                                id="status"
+                                class="user-form-control"
+                                required
+                            >
+
+                                <option value="Active"
+                                    {% if selected_status|lower == 'active' %}selected{% endif %}>
+                                    Active
+                                </option>
+
+                                <option value="Inactive"
+                                    {% if selected_status|lower == 'inactive' %}selected{% endif %}>
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
 
-                <!-- =========================
-                     ROLE
-                ========================== -->
+                <!-- ==================================
+                     FORM BUTTONS
+                =================================== -->
 
-                <div class="mb-3">
-
-                    <label
-                            for="role"
-                            class="form-label"
-                    >
-                        Role
-                    </label>
-
-                    <select
-                            name="role"
-                            id="role"
-                            class="form-select"
-                            required
-                    >
-
-                        <option
-                                value="Staff"
-                                {% if request.form.get('role', 'Staff') == 'Staff' %}
-                                selected
-                                {% endif %}
-                        >
-                            Staff
-                        </option>
-
-                        <option
-                                value="Admin"
-                                {% if request.form.get('role') == 'Admin' %}
-                                selected
-                                {% endif %}
-                        >
-                            Admin
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- =========================
-                     STATUS
-                ========================== -->
-
-                <div class="mb-4">
-
-                    <label
-                            for="status"
-                            class="form-label"
-                    >
-                        Status
-                    </label>
-
-                    <select
-                            name="status"
-                            id="status"
-                            class="form-select"
-                            required
-                    >
-
-                        <option
-                                value="Active"
-                                {% if request.form.get('status', 'Active') == 'Active' %}
-                                selected
-                                {% endif %}
-                        >
-                            Active
-                        </option>
-
-                        <option
-                                value="Inactive"
-                                {% if request.form.get('status') == 'Inactive' %}
-                                selected
-                                {% endif %}
-                        >
-                            Inactive
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- =========================
-                     BUTTONS
-                ========================== -->
-
-                <div class="d-flex gap-2">
-
-                    <button
-                            type="submit"
-                            class="btn btn-success"
-                    >
-
-                        <i class="fa-solid fa-floppy-disk me-1"></i>
-
-                        Save User
-
-                    </button>
-
+                <div class="user-form-footer">
 
                     <a
-                            href="{{ url_for('admin.admin_users') }}"
-                            class="btn btn-secondary"
+                        href="{{ url_for('admin.admin_users') }}"
+                        class="cancel-user-btn"
                     >
-
                         <i class="fa-solid fa-xmark me-1"></i>
-
                         Cancel
-
                     </a>
+
+
+                    <button
+                        type="submit"
+                        class="save-user-btn"
+                    >
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                        Save User
+                    </button>
 
                 </div>
 
@@ -307,84 +566,56 @@
 
     </div>
 
-
-    <!-- =========================
-         IMAGE PREVIEW
-    ========================== -->
-
-    <script>
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const profileInput =
-                document.getElementById("profile");
-
-            const previewImage =
-                document.getElementById("previewImage");
+</div>
 
 
-            if (!profileInput || !previewImage) {
-                return;
-            }
+<!-- ==========================================
+     PROFILE IMAGE PREVIEW
+========================================== -->
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-            profileInput.addEventListener(
-                "change",
-                function (event) {
+    const profileInput = document.getElementById("profile");
+    const previewImage = document.getElementById("previewImage");
 
-                    const file =
-                        event.target.files[0];
+    const defaultImage = "{{ url_for('static', filename='uploads/users/no-images.jpg') }}";
 
+    if (!profileInput || !previewImage) {
+        return;
+    }
 
-                    if (!file) {
+    let currentImageUrl = null;
 
-                        previewImage.src =
-                            "{{ url_for(
-                        'static',
-                        filename='uploads/users/no-images.jpg'
-                    ) }}";
+    profileInput.addEventListener("change", function (event) {
 
-                        return;
-                    }
+        const file = event.target.files[0];
 
+        if (!file) {
+            previewImage.src = defaultImage;
+            return;
+        }
 
-                    /*
-                     * Check image type
-                     */
+        if (!file.type.startsWith("image/")) {
 
-                    if (!file.type.startsWith("image/")) {
+            alert("Please select a valid image file.");
 
-                        alert(
-                            "Please select a valid image file."
-                        );
+            profileInput.value = "";
+            previewImage.src = defaultImage;
 
-                        profileInput.value = "";
+            return;
+        }
 
-                        previewImage.src =
-                            "{{ url_for(
-                        'static',
-                        filename='uploads/users/no-images.jpg'
-                    ) }}";
+        if (currentImageUrl) {
+            URL.revokeObjectURL(currentImageUrl);
+        }
 
-                        return;
-                    }
+        currentImageUrl = URL.createObjectURL(file);
+        previewImage.src = currentImageUrl;
 
+    });
 
-                    /*
-                     * Preview image
-                     */
-
-                    const imageURL =
-                        URL.createObjectURL(file);
-
-                    previewImage.src =
-                        imageURL;
-
-                }
-            );
-
-        });
-
-    </script>
+});
+</script>
 
 {% endblock %}

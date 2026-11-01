@@ -1,296 +1,587 @@
+
 {% extends "front/admin/master.html" %}
 
-{% block title %}
-    Edit User
-{% endblock %}
+{% block title %}Edit User{% endblock %}
 
 {% block page_content %}
 
-    <div class="page-title mb-4">
+<style>
+    /* ==========================================
+       EDIT USER PAGE
+    ========================================== */
 
-        <h2>Edit User</h2>
+    .user-form-page {
+        width: 100%;
+    }
 
-        <p class="text-muted">
-            Update user information
-        </p>
+    .user-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .user-page-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        font-weight: 600;
+        color: #252525;
+        margin-bottom: 5px;
+    }
+
+    .user-page-header p {
+        color: #888;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .back-btn {
+        background: #f2f0eb;
+        color: #665b4c;
+        border: 1px solid #e5e0d7;
+        padding: 10px 17px;
+        border-radius: 3px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .25s ease;
+        white-space: nowrap;
+    }
+
+    .back-btn:hover {
+        background: #b7a58a;
+        border-color: #b7a58a;
+        color: #fff;
+    }
+
+    /* ==========================================
+       FORM CARD
+    ========================================== */
+
+    .user-form-card {
+        background: #fff;
+        border: 1px solid #eaeaea;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, .035);
+    }
+
+    .user-form-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #eee;
+        background: #fff;
+    }
+
+    .user-form-card-header h5 {
+        color: #252525;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .user-form-card-header p {
+        color: #999;
+        font-size: 12px;
+        margin: 5px 0 0;
+    }
+
+    .user-form-card-body {
+        padding: 28px;
+    }
+
+    /* ==========================================
+       PROFILE IMAGE
+    ========================================== */
+
+    .profile-upload-section {
+        text-align: center;
+        padding: 10px 0 25px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .profile-preview {
+        width: 125px;
+        height: 125px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #e8e2d8;
+        padding: 3px;
+        background: #fff;
+        display: block;
+        margin: 0 auto 15px;
+    }
+
+    .profile-upload-label {
+        display: block;
+        color: #333;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .profile-upload-help {
+        display: block;
+        color: #999;
+        font-size: 11px;
+        margin-top: 7px;
+    }
+
+    /* ==========================================
+       FORM FIELDS
+    ========================================== */
+
+    .user-form-label {
+        display: block;
+        color: #444;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .user-form-label .required {
+        color: #c44e45;
+    }
+
+    .user-form-control {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #e5e2dc;
+        border-radius: 3px;
+        padding: 10px 13px;
+        color: #333;
+        font-size: 13px;
+        background: #fff;
+        transition: .2s ease;
+    }
+
+    .user-form-control:focus {
+        outline: none;
+        border-color: #b7a58a;
+        box-shadow: 0 0 0 3px rgba(183, 165, 138, .12);
+    }
+
+    .user-form-control::placeholder {
+        color: #aaa;
+    }
+
+    .form-group {
+        margin-bottom: 21px;
+    }
+
+    .form-section-title {
+        color: #252525;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* ==========================================
+       FORM BUTTONS
+    ========================================== */
+
+    .user-form-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 22px;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
+    }
+
+    .update-user-btn {
+        background: #252525;
+        color: #fff;
+        border: 1px solid #252525;
+        padding: 11px 22px;
+        border-radius: 3px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .25s ease;
+    }
+
+    .update-user-btn:hover {
+        background: #b7a58a;
+        border-color: #b7a58a;
+        color: #fff;
+    }
+
+    .cancel-user-btn {
+        background: #f2f0eb;
+        color: #665b4c;
+        border: 1px solid #e5e0d7;
+        padding: 11px 22px;
+        border-radius: 3px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: .25s ease;
+    }
+
+    .cancel-user-btn:hover {
+        background: #ddd8ce;
+        color: #333;
+    }
+
+    @media (max-width: 768px) {
+        .user-page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .user-page-header h2 {
+            font-size: 23px;
+        }
+
+        .user-form-card-body {
+            padding: 18px;
+        }
+
+        .user-form-footer {
+            flex-direction: column;
+        }
+
+        .user-form-footer button,
+        .user-form-footer a {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+
+<div class="user-form-page">
+
+    <!-- ==========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="user-page-header">
+
+        <div>
+            <h2>Edit User</h2>
+            <p>Update user information and account settings.</p>
+        </div>
+
+        <a href="{{ url_for('admin.admin_users') }}"
+           class="back-btn">
+
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back to Users
+
+        </a>
 
     </div>
 
 
-    <div class="card shadow-sm">
+    <!-- ==========================================
+         EDIT USER FORM CARD
+    ========================================== -->
 
-        <div class="card-body">
+    <div class="user-form-card">
+
+        <div class="user-form-card-header">
+
+            <h5>
+                <i class="fa-solid fa-user-pen me-2"></i>
+                Edit User Information
+            </h5>
+
+            <p>
+                Update the details for user #{{ user.id }}.
+            </p>
+
+        </div>
+
+
+        <div class="user-form-card-body">
 
             <form
-                    method="POST"
-                    action="{{ url_for('admin.edit_user', id=user.id) }}"
-                    enctype="multipart/form-data"
+                method="POST"
+                action="{{ url_for('admin.edit_user', id=user.id) }}"
+                enctype="multipart/form-data"
             >
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                <!-- ==========================
-                     Profile Image
-                =========================== -->
-
-                <div class="text-center mb-4">
-
-                    {% if user.profile %}
-
-                        <img
-                                id="previewImage"
-                                src="{{ url_for(
-                            'static',
-                            filename='uploads/users/' ~ user.profile
-                        ) }}"
-                                width="120"
-                                height="120"
-                                class="rounded-circle border"
-                                style="object-fit: cover;"
-                                alt="Profile Image"
-                                onerror="
-                                        this.onerror=null;
-                                        this.src='{{ url_for(
-                                'static',
-                                filename='uploads/users/no-images.jpg'
-                            ) }}';
-                                        "
-                        >
-
-                    {% else %}
-
-                        <img
-                                id="previewImage"
-                                src="{{ url_for(
-                            'static',
-                            filename='uploads/users/no-images.jpg'
-                        ) }}"
-                                width="120"
-                                height="120"
-                                class="rounded-circle border"
-                                style="object-fit: cover;"
-                                alt="No Profile Image"
-                        >
-
-                    {% endif %}
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
 
 
-                    <div class="mt-3">
+                <!-- ==================================
+                     PROFILE IMAGE
+                =================================== -->
 
-                        <label class="form-label">
-                            Profile Image
-                        </label>
+                {% set default_image = url_for('static', filename='uploads/users/no-images.jpg') %}
 
-                        <input
-                                type="file"
-                                name="profile"
-                                id="profile"
-                                class="form-control"
-                                accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
-                                onchange="previewFile(event)"
-                        >
+                <div class="profile-upload-section">
 
-                        <small class="text-muted">
-                            Leave empty to keep the current image.
-                        </small>
+                    <img
+                        id="previewImage"
+                        src="{{ url_for('static', filename='uploads/users/' ~ user.profile) if user.profile else default_image }}"
+                        alt="Profile Preview"
+                        class="profile-preview"
+                        onerror="this.onerror=null; this.src='{{ default_image }}';"
+                    >
+
+                    <label for="profile" class="profile-upload-label">
+                        Profile Image
+                    </label>
+
+                    <input
+                        type="file"
+                        name="profile"
+                        id="profile"
+                        class="form-control"
+                        accept=".jpg,.jpeg,.png,.gif,.webp"
+                    >
+
+                    <small class="profile-upload-help">
+                        Leave empty to keep the current profile image.
+                    </small>
+
+                </div>
+
+
+                <!-- ==================================
+                     PERSONAL INFORMATION
+                =================================== -->
+
+                <h6 class="form-section-title">
+
+                    <i class="fa-solid fa-id-card me-2"></i>
+                    Personal Information
+
+                </h6>
+
+
+                <div class="row">
+
+                    <!-- FULL NAME -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="name" class="user-form-label">
+                                Full Name <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                class="user-form-control"
+                                placeholder="Enter full name"
+                                value="{{ request.form.get('name', user.name or '') }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- USERNAME -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="username" class="user-form-label">
+                                Username <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="username"
+                                id="username"
+                                class="user-form-control"
+                                placeholder="Enter username"
+                                value="{{ request.form.get('username', user.username or '') }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="email" class="user-form-label">
+                                Email Address <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                class="user-form-control"
+                                placeholder="Enter email address"
+                                value="{{ request.form.get('email', user.email or '') }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label for="password" class="user-form-label">
+                                New Password
+                            </label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="user-form-control"
+                                placeholder="Leave blank to keep current password"
+                                autocomplete="new-password"
+                            >
+
+                            <small class="profile-upload-help">
+                                Leave blank if you do not want to change the password.
+                            </small>
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                <!-- ==========================
-                     Full Name
-                =========================== -->
+                <!-- ==================================
+                     ACCOUNT SETTINGS
+                =================================== -->
 
-                <div class="mb-3">
+                <h6 class="form-section-title mt-3">
 
-                    <label class="form-label">
-                        Full Name
-                    </label>
+                    <i class="fa-solid fa-gear me-2"></i>
+                    Account Settings
 
-                    <input
-                            type="text"
-                            name="name"
-                            class="form-control"
-                            value="{{ user.name }}"
-                            required
-                    >
-
-                </div>
+                </h6>
 
 
-                <!-- ==========================
-                     Username
-                =========================== -->
+                <div class="row">
 
-                <div class="mb-3">
+                    <!-- ROLE -->
+                    <div class="col-md-6">
 
-                    <label class="form-label">
-                        Username
-                    </label>
+                        <div class="form-group">
 
-                    <input
-                            type="text"
-                            name="username"
-                            class="form-control"
-                            value="{{ user.username }}"
-                            required
-                    >
+                            <label for="role" class="user-form-label">
+                                User Role <span class="required">*</span>
+                            </label>
 
-                </div>
+                            {% set selected_role = request.form.get('role', user.role or 'Staff') %}
 
+                            <select
+                                name="role"
+                                id="role"
+                                class="user-form-control"
+                                required
+                            >
 
-                <!-- ==========================
-                     Email
-                =========================== -->
+                                <option
+                                    value="Staff"
+                                    {% if selected_role|lower == 'staff' %}selected{% endif %}
+                                >
+                                    Staff
+                                </option>
 
-                <div class="mb-3">
+                                <option
+                                    value="Admin"
+                                    {% if selected_role|lower == 'admin' %}selected{% endif %}
+                                >
+                                    Admin
+                                </option>
 
-                    <label class="form-label">
-                        Email
-                    </label>
+                            </select>
 
-                    <input
-                            type="email"
-                            name="email"
-                            class="form-control"
-                            value="{{ user.email }}"
-                            required
-                    >
+                        </div>
 
-                </div>
-
-
-                <!-- ==========================
-                     Password
-                =========================== -->
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        New Password
-                    </label>
-
-                    <input
-                            type="password"
-                            name="password"
-                            class="form-control"
-                            placeholder="Leave blank to keep current password"
-                    >
-
-                    <small class="text-muted">
-                        Leave blank if you don't want to change the password.
-                    </small>
-
-                </div>
+                    </div>
 
 
-                <!-- ==========================
-                     Role
-                =========================== -->
+                    <!-- STATUS -->
+                    <div class="col-md-6">
 
-                <div class="mb-3">
+                        <div class="form-group">
 
-                    <label class="form-label">
-                        Role
-                    </label>
+                            <label for="status" class="user-form-label">
+                                Account Status <span class="required">*</span>
+                            </label>
 
-                    <select
-                            name="role"
-                            class="form-select"
-                            required
-                    >
+                            {% set selected_status = request.form.get('status', user.status or 'Active') %}
 
-                        <option
-                                value="Admin"
-                                {% if user.role == "Admin" %}
-                                selected
-                                {% endif %}
-                        >
-                            Admin
-                        </option>
+                            <select
+                                name="status"
+                                id="status"
+                                class="user-form-control"
+                                required
+                            >
 
-                        <option
-                                value="Staff"
-                                {% if user.role == "Staff" %}
-                                selected
-                                {% endif %}
-                        >
-                            Staff
-                        </option>
+                                <option
+                                    value="Active"
+                                    {% if selected_status|lower == 'active' %}selected{% endif %}
+                                >
+                                    Active
+                                </option>
 
-                    </select>
+                                <option
+                                    value="Inactive"
+                                    {% if selected_status|lower == 'inactive' %}selected{% endif %}
+                                >
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
 
-                <!-- ==========================
-                     Status
-                =========================== -->
+                <!-- ==================================
+                     FORM BUTTONS
+                =================================== -->
 
-                <div class="mb-4">
-
-                    <label class="form-label">
-                        Status
-                    </label>
-
-                    <select
-                            name="status"
-                            class="form-select"
-                            required
-                    >
-
-                        <option
-                                value="Active"
-                                {% if user.status == "Active" %}
-                                selected
-                                {% endif %}
-                        >
-                            Active
-                        </option>
-
-                        <option
-                                value="Inactive"
-                                {% if user.status == "Inactive" %}
-                                selected
-                                {% endif %}
-                        >
-                            Inactive
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- ==========================
-                     Buttons
-                =========================== -->
-
-                <div class="d-flex gap-2">
-
-                    <button
-                            type="submit"
-                            class="btn btn-primary"
-                    >
-
-                        <i class="fa-solid fa-floppy-disk me-1"></i>
-
-                        Update User
-
-                    </button>
-
+                <div class="user-form-footer">
 
                     <a
-                            href="{{ url_for('admin.admin_users') }}"
-                            class="btn btn-secondary"
+                        href="{{ url_for('admin.admin_users') }}"
+                        class="cancel-user-btn"
                     >
 
                         <i class="fa-solid fa-xmark me-1"></i>
-
                         Cancel
 
                     </a>
+
+
+                    <button
+                        type="submit"
+                        class="update-user-btn"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                        Update User
+
+                    </button>
 
                 </div>
 
@@ -300,30 +591,53 @@
 
     </div>
 
+</div>
 
-    <!-- ==========================
-         Image Preview
-    =========================== -->
 
-    <script>
+<!-- ==========================================
+     PROFILE IMAGE PREVIEW
+========================================== -->
 
-        function previewFile(event) {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-            const preview =
-                document.getElementById("previewImage");
+    const profileInput = document.getElementById("profile");
+    const previewImage = document.getElementById("previewImage");
 
-            const file =
-                event.target.files[0];
+    if (!profileInput || !previewImage) {
+        return;
+    }
 
-            if (file) {
+    let currentImageUrl = null;
 
-                preview.src =
-                    URL.createObjectURL(file);
+    profileInput.addEventListener("change", function (event) {
 
-            }
+        const file = event.target.files[0];
 
+        if (!file) {
+            return;
         }
 
-    </script>
+        if (!file.type.startsWith("image/")) {
+
+            alert("Please select a valid image file.");
+
+            profileInput.value = "";
+
+            return;
+        }
+
+        if (currentImageUrl) {
+            URL.revokeObjectURL(currentImageUrl);
+        }
+
+        currentImageUrl = URL.createObjectURL(file);
+
+        previewImage.src = currentImageUrl;
+
+    });
+
+});
+</script>
 
 {% endblock %}

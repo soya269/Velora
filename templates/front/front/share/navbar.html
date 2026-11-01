@@ -1,19 +1,46 @@
 <header class="main-header">
     <div class="container nav-wrap">
-        <a href="{{ url_for('front.home') }}" class="brand-logo">VELORA</a>
-        <nav class="nav-menu"><a href="{{ url_for('front.home') }}">Home</a><a
-                href="{{ url_for('front.about') }}">About</a><a href="{{ url_for('front.shop') }}">Shop</a><a
-                href="{{ url_for('front.product_list') }}">Collection</a><a href="{{ url_for('front.contact') }}">Contact</a>
+
+        <!-- Brand Logo -->
+        <a href="{{ url_for('front.home') }}" class="brand-logo">
+            VELORA
+        </a>
+
+        <!-- Navigation Menu -->
+        <nav class="nav-menu">
+            <a href="{{ url_for('front.home') }}">Home</a>
+            <a href="{{ url_for('front.about') }}">About</a>
+            <a href="{{ url_for('front.shop') }}">Shop</a>
+            <a href="{{ url_for('front.product_list') }}">Collection</a>
+            <a href="{{ url_for('front.contact') }}">Contact</a>
         </nav>
+
+        <!-- Navigation Actions -->
         <div class="nav-actions">
-            {% if session.get('user') %}<a href="{{ url_for('front.account') }}">Account</a>
-                <a href="{{ url_for('front.logout') }}">Logout</a>{% else %}
+
+            {% if session.get('user') %}
+                <a href="{{ url_for('front.account') }}">Account</a>
+                <a href="{{ url_for('front.logout') }}">Logout</a>
+            {% else %}
                 <a href="{{ url_for('front.login') }}">Login</a>
-                <a href="{{ url_for('front.register') }}">Register</a>{% endif %}
-            <a href="{{ url_for('front.cart') }}" class="cart-btn">Bag{% if cart_count %} ({{ cart_count }}
-                ){% endif %}</a>
-            {% if session.get('user',{}).get('role') == 'Admin' %}
-                <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>{% endif %}
+                <a href="{{ url_for('front.register') }}">Register</a>
+            {% endif %}
+
+            <!-- Shopping Bag -->
+            <a href="{{ url_for('front.cart') }}" class="cart-btn">
+                Bag
+                {% if cart_count %}
+                    <span class="cart-count">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+
+            <!-- Admin Dashboard -->
+            {% if session.get('user', {}).get('role', '')|lower == 'admin' %}
+                <a href="{{ url_for('admin.admin_dashboard') }}" class="admin-link">
+                    Admin
+                </a>
+            {% endif %}
+
         </div>
     </div>
 </header>

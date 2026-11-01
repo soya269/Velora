@@ -1,112 +1,396 @@
-{#<!doctype html>#}
-{#<html>#}
-{#<head>#}
-{#    <meta charset="utf-8">#}
-{#    <meta name="viewport" content="width=device-width,initial-scale=1">#}
-{#    <title>VELORA Admin Login</title>#}
-{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">#}
-{#    <style>body {#}
-{#        min-height: 100vh;#}
-{#        display: grid;#}
-{#        place-items: center;#}
-{#        background: #111#}
-{#    }#}
-{##}
-{#    .card {#}
-{#        width: min(420px, 92vw)#}
-{#    }</style>#}
-{#</head>#}
-{#<body>#}
-{#<div class="card shadow-lg">#}
-{#    <div class="card-body p-4"><h2 class="text-center mb-1">VELORA</h2>#}
-{#        <p class="text-center text-muted">Administrator Login</p>#}
-{#        {% with messages=get_flashed_messages(with_categories=true) %}{% for c,m in messages %}#}
-{#            <div class="alert alert-{{ c }}">{{ m }}</div>{% endfor %}{% endwith %}#}
-{##}
-{#    <form method="POST" action=" {{ url_for('admin.admin_login') }}">#}
-{#    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">#}
-{#            <input class="form-control mb-3" name="username" placeholder="Username or email" required>#}
-{##}
-{#            <input class="form-control mb-3" type="password" name="password" placeholder="Password" required>#}
-{##}
-{#            <button class="btn btn-dark w-100">Login</button>#}
-{#        </form>#}
-{#        <a class="d-block text-center mt-3" href="{{ url_for('front.home') }}">Back to store</a></div>#}
-{#</div>#}
-{#</body>#}
-{#</html>#}
 
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>VELORA Admin Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>VELORA | Administrator Login</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
     <style>
-        body {
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: #111;
+        :root {
+            --primary: #857763;
+            --primary-dark: #6e604e;
+            --dark: #292723;
+            --text: #38342f;
+            --muted: #89847d;
+            --border: #e8e3dc;
+            --background: #f5f3ef;
+            --white: #ffffff;
         }
 
-        .card {
-            width: min(420px, 92vw);
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 25px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 15% 15%, #e8e1d6 0, transparent 35%),
+                radial-gradient(circle at 85% 85%, #e4ddd2 0, transparent 35%),
+                var(--background);
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .login-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 45px 40px 35px;
+            box-shadow: 0 18px 55px rgba(41, 39, 35, 0.08);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .brand-line {
+            width: 42px;
+            height: 2px;
+            background: var(--primary);
+            margin: 15px auto;
+        }
+
+        .brand-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .login-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-heading h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 25px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .login-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(133, 119, 99, 0.10);
+        }
+
+        .input-group-text {
+            background: #faf9f7;
+            border: none;
+            border-radius: 0;
+            color: var(--primary);
+            padding: 12px 14px;
+        }
+
+        .form-control {
+            min-height: 47px;
+            border: none;
+            border-radius: 0;
+            box-shadow: none !important;
+            font-size: 13px;
+            color: var(--text);
+            background: transparent;
+        }
+
+        .form-control::placeholder {
+            color: #aaa49b;
+        }
+
+        .password-toggle {
+            border: none;
+            background: #faf9f7;
+            color: var(--muted);
+            padding: 0 14px;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .login-btn {
+            width: 100%;
+            min-height: 49px;
+            margin-top: 12px;
+            border: 1px solid var(--dark);
+            border-radius: 3px;
+            background: var(--dark);
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .login-btn i {
+            margin-left: 8px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 27px;
+            color: var(--muted);
+            font-size: 12px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .security-note i {
+            color: var(--primary);
+        }
+
+        .alert {
+            font-size: 12px;
+            border-radius: 3px;
+            margin-bottom: 22px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 35px 24px 28px;
+            }
+
+            .brand-name {
+                font-size: 33px;
+            }
         }
     </style>
 </head>
-<body>
-<div class="card shadow-lg">
-    <div class="card-body p-4">
-        <h2 class="text-center mb-1">VELORA</h2>
-        <p class="text-center text-muted">Administrator Login</p>
 
+<body>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <!-- BRAND -->
+        <div class="brand">
+            <h1 class="brand-name">VELORA</h1>
+            <div class="brand-line"></div>
+            <p class="brand-subtitle">Administration Portal</p>
+        </div>
+
+        <!-- LOGIN HEADING -->
+        <div class="login-heading">
+            <h2>Welcome Back</h2>
+            <p>Sign in to manage your store</p>
+        </div>
+
+        <!-- FLASH MESSAGES -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for c, m in messages %}
-                    <div class="alert alert-{{ c if c != 'message' else 'info' }} alert-dismissible fade show" role="alert">
-                        {{ m }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show"
+                         role="alert">
+
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                        </button>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
+        <!-- LOGIN FORM -->
         <form method="POST" action="{{ url_for('admin.admin_login') }}">
-            <input type="hidden" name="csrf_token"
+
+            <input type="hidden"
+                   name="csrf_token"
                    value="{{ csrf_token() }}">
 
-            <div class="mb-3">
-                <input
-                    class="form-control"
-                    type="text"
-                    name="username"
-                    placeholder="Username or email"
-                    required
-                    autofocus
-                >
+            <!-- USERNAME -->
+            <div class="mb-4">
+                <label class="form-label" for="username">
+                    Username or Email
+                </label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-regular fa-user"></i>
+                    </span>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username or email"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
             </div>
 
-            <div class="mb-3">
-                <input
-                    class="form-control"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    required
-                >
+            <!-- PASSWORD -->
+            <div class="mb-4">
+                <label class="form-label" for="password">
+                    Password
+                </label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="togglePassword"
+                        aria-label="Show password"
+                    >
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-dark w-100 py-2">Login</button>
+            <!-- SUBMIT -->
+            <button type="submit" class="login-btn">
+                Sign In
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
         </form>
 
-        <a class="d-block text-center text-decoration-none mt-3" href="{{ url_for('front.home') }}">
-            ← Back to store
-        </a>
+        <!-- BACK TO STORE -->
+        <div class="text-center">
+            <a href="{{ url_for('front.home') }}" class="back-link">
+                <i class="fa-solid fa-arrow-left me-1"></i>
+                Back to Store
+            </a>
+        </div>
+
+        <!-- SECURITY -->
+        <div class="security-note">
+            <i class="fa-solid fa-shield-halved"></i>
+            SECURE ADMINISTRATOR ACCESS
+        </div>
+
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordInput = document.getElementById("password");
+        const toggleButton = document.getElementById("togglePassword");
+
+        if (!passwordInput || !toggleButton) return;
+
+        toggleButton.addEventListener("click", function () {
+            const isPassword = passwordInput.type === "password";
+
+            passwordInput.type = isPassword ? "text" : "password";
+
+            toggleButton.innerHTML = isPassword
+                ? '<i class="fa-regular fa-eye-slash"></i>'
+                : '<i class="fa-regular fa-eye"></i>';
+
+            toggleButton.setAttribute(
+                "aria-label",
+                isPassword ? "Hide password" : "Show password"
+            );
+        });
+    });
+</script>
+
 </body>
 </html>

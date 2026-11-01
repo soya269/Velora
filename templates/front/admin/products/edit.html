@@ -1,24 +1,706 @@
+
 {% extends "front/admin/master.html" %}
+
 {% block title %}Edit Product | VELORA{% endblock %}
+
 {% block page_content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <div><h2>Edit Product</h2><p class="text-muted mb-0">Manage product details, pricing and images.</p></div>
-  <a class="btn btn-outline-secondary" href="{{ url_for('admin.admin_products') }}">Back</a>
+
+<style>
+    /* =========================================
+       VELORA RESPONSIVE EDIT PRODUCT
+    ========================================= */
+
+    .edit-product-page {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        font-family: 'DM Sans', sans-serif;
+        color: #292929;
+        overflow-x: hidden;
+    }
+
+    .edit-product-page * {
+        box-sizing: border-box;
+    }
+
+    /* Page Heading */
+    .edit-product-page .page-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .edit-product-page .page-heading h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(23px, 3vw, 30px);
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #292929;
+    }
+
+    .edit-product-page .page-heading p {
+        color: #888;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    /* Back Button */
+    .edit-product-page .back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border: 1px solid #e9e6df;
+        color: #555;
+        background: #fff;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+        transition: .3s;
+        white-space: nowrap;
+    }
+
+    .edit-product-page .back-btn:hover {
+        background: #292929;
+        border-color: #292929;
+        color: #fff;
+    }
+
+    /* Form Card */
+    .edit-product-page .form-card {
+        width: 100%;
+        background: #fff;
+        border: 1px solid #e9e6df;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .edit-product-page .form-card-header {
+        padding: 18px 22px;
+        background: #faf9f6;
+        border-bottom: 1px solid #e9e6df;
+    }
+
+    .edit-product-page .form-card-header h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+        color: #292929;
+    }
+
+    .edit-product-page .form-card-body {
+        padding: 25px;
+    }
+
+    /* Section Heading */
+    .edit-product-page .section-label {
+        font-family: 'Playfair Display', serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: #a38b6b;
+        margin: 8px 0 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* Labels */
+    .edit-product-page .form-label {
+        display: block;
+        color: #555;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        margin-bottom: 8px;
+    }
+
+    /* Inputs */
+    .edit-product-page .form-control,
+    .edit-product-page .form-select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #e5e2dc;
+        border-radius: 2px;
+        background-color: #fff;
+        color: #333;
+        font-size: 12px;
+        box-shadow: none;
+        padding: 10px 12px;
+    }
+
+    .edit-product-page textarea.form-control {
+        min-height: 115px;
+        resize: vertical;
+    }
+
+    .edit-product-page .form-control:focus,
+    .edit-product-page .form-select:focus {
+        border-color: #a38b6b;
+        box-shadow: 0 0 0 3px rgba(163, 139, 107, .10);
+    }
+
+    .edit-product-page input[type="file"].form-control {
+        padding: 8px;
+        min-height: 42px;
+        font-size: 11px;
+    }
+
+    .edit-product-page input[type="file"]::file-selector-button {
+        margin-right: 10px;
+        padding: 6px 10px;
+        border: 0;
+        background: #f1eee8;
+        color: #655b4e;
+        border-radius: 2px;
+        cursor: pointer;
+        font-size: 10px;
+    }
+
+    /* Form Hint */
+    .edit-product-page .form-hint {
+        display: block;
+        margin-top: 7px;
+        font-size: 10px;
+        color: #999;
+        line-height: 1.5;
+    }
+
+    /* Current Image */
+    .edit-product-page .current-image {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        min-width: 0;
+        margin-top: 12px;
+        padding: 10px;
+        background: #f7f6f2;
+        border: 1px solid #e9e6df;
+    }
+
+    .edit-product-page .current-image img {
+        width: 55px;
+        height: 65px;
+        flex-shrink: 0;
+        object-fit: cover;
+        border: 1px solid #e9e6df;
+        background: #fff;
+    }
+
+    .edit-product-page .current-image small {
+        color: #777;
+        font-size: 10px;
+        overflow-wrap: anywhere;
+    }
+
+    /* Form Actions */
+    .edit-product-page .form-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e9e6df;
+    }
+
+    .edit-product-page .update-btn,
+    .edit-product-page .cancel-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 10px 20px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+        text-decoration: none;
+        border-radius: 2px;
+        transition: .3s;
+        cursor: pointer;
+    }
+
+    .edit-product-page .update-btn {
+        background: #292929;
+        color: #fff;
+        border: 1px solid #292929;
+    }
+
+    .edit-product-page .update-btn:hover {
+        background: #a38b6b;
+        border-color: #a38b6b;
+    }
+
+    .edit-product-page .cancel-btn {
+        background: #f7f6f2;
+        color: #555;
+        border: 1px solid #e9e6df;
+    }
+
+    .edit-product-page .cancel-btn:hover {
+        background: #e9e6df;
+        color: #252525;
+    }
+
+    /* Tablet */
+    @media (max-width: 768px) {
+        .edit-product-page .form-card-body {
+            padding: 20px;
+        }
+
+        .edit-product-page .form-card-header {
+            padding: 16px 20px;
+        }
+
+        .edit-product-page .section-label {
+            font-size: 17px;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 576px) {
+        .edit-product-page .page-top {
+            align-items: stretch;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .edit-product-page .back-btn {
+            width: 100%;
+        }
+
+        .edit-product-page .form-card-body {
+            padding: 15px;
+        }
+
+        .edit-product-page .form-card-header {
+            padding: 15px;
+        }
+
+        .edit-product-page .form-card-header h5 {
+            font-size: 18px;
+        }
+
+        .edit-product-page .section-label {
+            margin-top: 12px !important;
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        .edit-product-page .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .edit-product-page .update-btn,
+        .edit-product-page .cancel-btn {
+            width: 100%;
+        }
+
+        .edit-product-page .current-image {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+
+<div class="edit-product-page">
+
+    <!-- PAGE HEADING -->
+    <div class="page-top">
+
+        <div class="page-heading">
+            <h2>Edit Product</h2>
+            <p>
+                Update product details, pricing, inventory and images.
+            </p>
+        </div>
+
+        <a class="back-btn"
+           href="{{ url_for('admin.admin_products') }}">
+            <i class="fas fa-arrow-left"></i>
+            Back to Products
+        </a>
+
+    </div>
+
+
+    <!-- EDIT PRODUCT FORM -->
+    <div class="form-card">
+
+        <div class="form-card-header">
+            <h5>Product Information</h5>
+        </div>
+
+        <div class="form-card-body">
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+
+                <!-- BASIC INFORMATION -->
+                <h6 class="section-label">
+                    Basic Information
+                </h6>
+
+                <div class="row g-3">
+
+                    <!-- PRODUCT NAME -->
+                    <div class="col-12 col-md-6">
+
+                        <label class="form-label">
+                            Product Name *
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="text"
+                            name="name"
+                            placeholder="Enter product name"
+                            required
+                            value="{{ request.form.get('name', product.name if product else '') }}"
+                        >
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+                    <div class="col-12 col-md-6">
+
+                        <label class="form-label">
+                            Category *
+                        </label>
+
+                        <select class="form-select"
+                                name="category_id"
+                                required>
+
+                            <option value="">
+                                Choose Category
+                            </option>
+
+                            {% for c in categories %}
+
+                                <option
+                                    value="{{ c.id }}"
+                                    {% if (product and product.category_id == c.id) or request.form.get('category_id') == c.id|string %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ c.name }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRICING AND INVENTORY -->
+                <h6 class="section-label mt-4">
+                    Pricing & Inventory
+                </h6>
+
+                <div class="row g-3">
+
+                    <!-- COST -->
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Cost Price ($) *
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            name="cost"
+                            required
+                            value="{{ request.form.get('cost', product.cost if product else '0') }}"
+                        >
+
+                    </div>
+
+
+                    <!-- SELLING PRICE -->
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Selling Price ($) *
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            name="price"
+                            required
+                            value="{{ request.form.get('price', product.price if product else '0') }}"
+                        >
+
+                    </div>
+
+
+                    <!-- STOCK -->
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Stock Quantity *
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="number"
+                            min="0"
+                            name="stock"
+                            required
+                            value="{{ request.form.get('stock', product.stock if product else '0') }}"
+                        >
+
+                    </div>
+
+
+                    <!-- RATING -->
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Rating (0–5)
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="number"
+                            min="0"
+                            max="5"
+                            step="0.1"
+                            name="rating"
+                            value="{{ request.form.get('rating', product.rating if product else '0') }}"
+                        >
+
+                        <small class="form-hint">
+                            Enter a rating between 0 and 5.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRODUCT IMAGES -->
+                <h6 class="section-label mt-4">
+                    Product Images
+                </h6>
+
+                <div class="row g-3">
+
+                    <!-- MAIN THUMBNAIL -->
+                    <div class="col-12 col-md-6">
+
+                        <label class="form-label">
+                            Main Thumbnail
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="file"
+                            name="thumbnail"
+                            accept="image/*"
+                            id="thumbnailInput"
+                        >
+
+                        <small class="form-hint">
+                            Upload a new image to replace the current thumbnail.
+                        </small>
+
+                        {% if product and product.thumbnail %}
+
+                            {% set current_thumbnail = product.thumbnail if product.thumbnail.startswith('http') else url_for('static', filename='uploads/products/' ~ product.thumbnail) %}
+
+                            <div class="current-image">
+
+                                <img
+                                    src="{{ current_thumbnail }}"
+                                    alt="{{ product.name }}"
+                                    id="currentThumbnail"
+                                >
+
+                                <div>
+                                    <small>
+                                        Current image:<br>
+                                        {{ product.thumbnail }}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- NEW IMAGE PREVIEW -->
+                        <div id="thumbnailPreview"
+                             class="current-image"
+                             style="display:none;">
+
+                            <img
+                                src=""
+                                alt="New thumbnail preview"
+                                id="previewImage"
+                            >
+
+                            <div>
+                                <small>New image preview</small>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ADDITIONAL IMAGES -->
+                    <div class="col-12 col-md-6">
+
+                        <label class="form-label">
+                            Additional Images
+                        </label>
+
+                        <input
+                            class="form-control"
+                            type="file"
+                            name="images"
+                            accept="image/*"
+                            multiple
+                        >
+
+                        <small class="form-hint">
+                            You can select multiple images.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+                <h6 class="section-label mt-4">
+                    Product Description
+                </h6>
+
+                <div class="row">
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Description
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            name="description"
+                            rows="5"
+                            placeholder="Write a description about this product..."
+                        >{{ request.form.get('description', product.description if product else '') }}</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM ACTIONS -->
+                <div class="form-actions">
+
+                    <button class="update-btn"
+                            type="submit">
+
+                        <i class="fas fa-save"></i>
+                        Update Product
+
+                    </button>
+
+                    <a class="cancel-btn"
+                       href="{{ url_for('admin.admin_products') }}">
+
+                        <i class="fas fa-times"></i>
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
 </div>
-<div class="card shadow-sm"><div class="card-body">
-<form method="POST" enctype="multipart/form-data">
-<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-<div class="row g-3">
- <div class="col-md-6"><label class="form-label">Product name *</label><input class="form-control" name="name" required value="{{ product.name if product else request.form.get('name','') }}"></div>
- <div class="col-md-3"><label class="form-label">Category *</label><select class="form-select" name="category_id" required><option value="">Choose category</option>{% for c in categories %}<option value="{{ c.id }}" {% if (product and product.category_id == c.id) or request.form.get('category_id') == c.id|string %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
- <div class="col-md-3"><label class="form-label">Brand</label><select class="form-select" name="brand_id"><option value="">No brand</option>{% for b in brands %}<option value="{{ b.id }}" {% if (product and product.brand_id == b.id) or request.form.get('brand_id') == b.id|string %}selected{% endif %}>{{ b.name }}</option>{% endfor %}</select></div>
- <div class="col-md-4"><label class="form-label">Cost ($) *</label><input class="form-control" type="number" min="0" step="0.01" name="cost" required value="{{ product.cost if product else request.form.get('cost','0') }}"></div>
- <div class="col-md-4"><label class="form-label">Price ($) *</label><input class="form-control" type="number" min="0" step="0.01" name="price" required value="{{ product.price if product else request.form.get('price','0') }}"></div>
- <div class="col-md-4"><label class="form-label">Stock *</label><input class="form-control" type="number" min="0" name="stock" required value="{{ product.stock if product else request.form.get('stock','0') }}"></div><div class="col-md-4"><label class="form-label">Rating (0–5)</label><input class="form-control" type="number" min="0" max="5" step="0.1" name="rating" value="{{ product.rating if product else request.form.get('rating','0') }}"></div>
- <div class="col-md-6"><label class="form-label">Main thumbnail</label><input class="form-control" type="file" name="thumbnail" accept="image/*">{% if product and product.thumbnail %}<small class="text-muted">Current: {{ product.thumbnail }}</small>{% endif %}</div>
- <div class="col-md-6"><label class="form-label">Additional images</label><input class="form-control" type="file" name="images" accept="image/*" multiple></div>
- <div class="col-12"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="4">{{ product.description if product else request.form.get('description','') }}</textarea></div>
-</div>
-<div class="mt-4"><button class="btn btn-primary" type="submit">Update Product</button><a class="btn btn-light ms-2" href="{{ url_for('admin.admin_products') }}">Cancel</a></div>
-</form></div></div>
+
+
+<!-- THUMBNAIL PREVIEW SCRIPT -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const input = document.getElementById('thumbnailInput');
+        const preview = document.getElementById('thumbnailPreview');
+        const image = document.getElementById('previewImage');
+
+        let previewObjectUrl = null;
+
+        if (input && preview && image) {
+
+            input.addEventListener('change', function () {
+
+                const file = this.files[0];
+
+                if (file) {
+
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file.');
+                        this.value = '';
+                        preview.style.display = 'none';
+                        return;
+                    }
+
+                    if (previewObjectUrl) {
+                        URL.revokeObjectURL(previewObjectUrl);
+                    }
+
+                    previewObjectUrl = URL.createObjectURL(file);
+                    image.src = previewObjectUrl;
+                    preview.style.display = 'flex';
+
+                } else {
+
+                    preview.style.display = 'none';
+
+                    if (previewObjectUrl) {
+                        URL.revokeObjectURL(previewObjectUrl);
+                        previewObjectUrl = null;
+                    }
+
+                }
+
+            });
+
+        }
+
+    });
+</script>
+
 {% endblock %}

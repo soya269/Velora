@@ -102,3 +102,444 @@
 ></script>
 </body>
 </html>
+{##}
+{#<!doctype html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{##}
+{#    <title>Contact | VELORA</title>#}
+{##}
+{#    <!-- Google Fonts -->#}
+{#    <link rel="preconnect" href="https://fonts.googleapis.com">#}
+{#    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>#}
+{#    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">#}
+{##}
+{#    <!-- Bootstrap -->#}
+{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">#}
+{##}
+{#    <!-- Main CSS -->#}
+{#    <link rel="stylesheet" href="{{ url_for('static', filename='front/style.css') }}">#}
+{##}
+{#    <style>#}
+{#        :root {#}
+{#            --velora-black: #252525;#}
+{#            --velora-dark: #383838;#}
+{#            --velora-grey: #777777;#}
+{#            --velora-light-grey: #aaaaaa;#}
+{#            --velora-cream: #f7f6f2;#}
+{#            --velora-border: #e9e6df;#}
+{#            --velora-accent: #a38b6b;#}
+{#            --velora-white: #ffffff;#}
+{#        }#}
+{##}
+{#        body {#}
+{#            font-family: 'DM Sans', sans-serif;#}
+{#            color: var(--velora-black);#}
+{#            background: var(--velora-white);#}
+{#        }#}
+{##}
+{#        /* HERO */#}
+{#        .contact-hero {#}
+{#            background: var(--velora-cream);#}
+{#            padding: 105px 20px 100px;#}
+{#            text-align: center;#}
+{#        }#}
+{##}
+{#        .contact-hero span {#}
+{#            display: inline-block;#}
+{#            color: var(--velora-accent);#}
+{#            font-size: 11px;#}
+{#            font-weight: 700;#}
+{#            letter-spacing: 4px;#}
+{#            margin-bottom: 22px;#}
+{#        }#}
+{##}
+{#        .contact-hero h1 {#}
+{#            font-family: 'Playfair Display', serif;#}
+{#            font-size: clamp(42px, 6vw, 68px);#}
+{#            font-weight: 500;#}
+{#            margin-bottom: 20px;#}
+{#        }#}
+{##}
+{#        .contact-hero p {#}
+{#            max-width: 590px;#}
+{#            margin: auto;#}
+{#            color: var(--velora-grey);#}
+{#            font-size: 15px;#}
+{#            line-height: 1.9;#}
+{#        }#}
+{##}
+{#        /* CONTACT SECTION */#}
+{#        .contact-section {#}
+{#            padding: 100px 0;#}
+{#        }#}
+{##}
+{#        .contact-image-wrapper {#}
+{#            position: relative;#}
+{#            background: var(--velora-cream);#}
+{#            padding: 35px;#}
+{#            min-height: 550px;#}
+{#            display: flex;#}
+{#            align-items: center;#}
+{#            justify-content: center;#}
+{#            overflow: hidden;#}
+{#        }#}
+{##}
+{#        .contact-image {#}
+{#            width: 100%;#}
+{#            max-height: 480px;#}
+{#            object-fit: contain;#}
+{#            transition: transform .5s ease;#}
+{#        }#}
+{##}
+{#        .contact-image-wrapper:hover .contact-image {#}
+{#            transform: scale(1.035);#}
+{#        }#}
+{##}
+{#        .contact-image-caption {#}
+{#            position: absolute;#}
+{#            left: 35px;#}
+{#            bottom: 25px;#}
+{#            color: var(--velora-grey);#}
+{#            font-size: 11px;#}
+{#            letter-spacing: 2px;#}
+{#            text-transform: uppercase;#}
+{#        }#}
+{##}
+{#        /* FORM CONTENT */#}
+{#        .contact-content {#}
+{#            padding: 20px 0 20px 55px;#}
+{#        }#}
+{##}
+{#        .contact-small {#}
+{#            display: block;#}
+{#            color: var(--velora-accent);#}
+{#            font-size: 11px;#}
+{#            font-weight: 700;#}
+{#            letter-spacing: 3px;#}
+{#            text-transform: uppercase;#}
+{#            margin-bottom: 17px;#}
+{#        }#}
+{##}
+{#        .contact-title {#}
+{#            font-family: 'Playfair Display', serif;#}
+{#            font-size: clamp(38px, 4vw, 52px);#}
+{#            font-weight: 500;#}
+{#            margin-bottom: 18px;#}
+{#        }#}
+{##}
+{#        .contact-description {#}
+{#            color: var(--velora-grey);#}
+{#            font-size: 14px;#}
+{#            line-height: 1.9;#}
+{#            margin-bottom: 35px;#}
+{#            max-width: 450px;#}
+{#        }#}
+{##}
+{#        /* FORM */#}
+{#        .contact-form label {#}
+{#            display: block;#}
+{#            color: var(--velora-dark);#}
+{#            font-size: 12px;#}
+{#            font-weight: 600;#}
+{#            margin-bottom: 10px;#}
+{#        }#}
+{##}
+{#        .contact-form .form-control {#}
+{#            min-height: 52px;#}
+{#            border: 1px solid var(--velora-border);#}
+{#            border-radius: 0;#}
+{#            padding: 14px 16px;#}
+{#            font-size: 13px;#}
+{#            background: #fff;#}
+{#            box-shadow: none;#}
+{#            transition: border-color .3s ease;#}
+{#        }#}
+{##}
+{#        .contact-form textarea.form-control {#}
+{#            min-height: 145px;#}
+{#            resize: vertical;#}
+{#        }#}
+{##}
+{#        .contact-form .form-control:focus {#}
+{#            border-color: var(--velora-accent);#}
+{#            box-shadow: none;#}
+{#        }#}
+{##}
+{#        .contact-form .form-control::placeholder {#}
+{#            color: #b5b5b5;#}
+{#        }#}
+{##}
+{#        /* BUTTON */#}
+{#        .btn-contact {#}
+{#            width: 100%;#}
+{#            min-height: 54px;#}
+{#            border: 1px solid var(--velora-black);#}
+{#            border-radius: 0;#}
+{#            background: var(--velora-black);#}
+{#            color: white;#}
+{#            font-size: 11px;#}
+{#            font-weight: 700;#}
+{#            letter-spacing: 2px;#}
+{#            text-transform: uppercase;#}
+{#            transition: all .3s ease;#}
+{#        }#}
+{##}
+{#        .btn-contact:hover {#}
+{#            background: transparent;#}
+{#            color: var(--velora-black);#}
+{#            border-color: var(--velora-black);#}
+{#        }#}
+{##}
+{#        /* CONTACT INFORMATION */#}
+{#        .contact-info {#}
+{#            margin-top: 55px;#}
+{#            padding-top: 30px;#}
+{#            border-top: 1px solid var(--velora-border);#}
+{#        }#}
+{##}
+{#        .contact-info-item {#}
+{#            display: flex;#}
+{#            align-items: flex-start;#}
+{#            gap: 15px;#}
+{#            margin-bottom: 22px;#}
+{#        }#}
+{##}
+{#        .contact-info-icon {#}
+{#            width: 40px;#}
+{#            height: 40px;#}
+{#            background: var(--velora-cream);#}
+{#            display: flex;#}
+{#            align-items: center;#}
+{#            justify-content: center;#}
+{#            color: var(--velora-accent);#}
+{#            flex-shrink: 0;#}
+{#        }#}
+{##}
+{#        .contact-info-item h6 {#}
+{#            font-size: 12px;#}
+{#            font-weight: 700;#}
+{#            margin-bottom: 5px;#}
+{#        }#}
+{##}
+{#        .contact-info-item p {#}
+{#            color: var(--velora-grey);#}
+{#            font-size: 12px;#}
+{#            margin-bottom: 0;#}
+{#        }#}
+{##}
+{#        /* RESPONSIVE */#}
+{#        @media (max-width: 991px) {#}
+{#            .contact-section {#}
+{#                padding: 70px 0;#}
+{#            }#}
+{##}
+{#            .contact-content {#}
+{#                padding: 50px 10px 0;#}
+{#            }#}
+{##}
+{#            .contact-image-wrapper {#}
+{#                min-height: 420px;#}
+{#            }#}
+{#        }#}
+{##}
+{#        @media (max-width: 576px) {#}
+{#            .contact-hero {#}
+{#                padding: 75px 18px;#}
+{#            }#}
+{##}
+{#            .contact-section {#}
+{#                padding: 45px 0 65px;#}
+{#            }#}
+{##}
+{#            .contact-image-wrapper {#}
+{#                min-height: 300px;#}
+{#                padding: 20px;#}
+{#            }#}
+{##}
+{#            .contact-content {#}
+{#                padding: 40px 5px 0;#}
+{#            }#}
+{##}
+{#            .contact-title {#}
+{#                font-size: 39px;#}
+{#            }#}
+{##}
+{#            .contact-info {#}
+{#                margin-top: 40px;#}
+{#            }#}
+{#        }#}
+{#    </style>#}
+{#</head>#}
+{##}
+{#<body>#}
+{##}
+{#{% include 'front/front/share/navbar.html' %}#}
+{##}
+{#<main>#}
+{##}
+{#    <!-- HERO SECTION -->#}
+{#    <section class="contact-hero">#}
+{#        <div class="container">#}
+{##}
+{#            <span>CONTACT VELORA</span>#}
+{##}
+{#            <h1>Let's Connect</h1>#}
+{##}
+{#            <p>#}
+{#                We'd love to hear from you. Whether you need fashion advice,#}
+{#                product information, or personal assistance, our team is#}
+{#                always happy to help.#}
+{#            </p>#}
+{##}
+{#        </div>#}
+{#    </section>#}
+{##}
+{##}
+{#    <!-- CONTACT SECTION -->#}
+{#    <section class="contact-section">#}
+{#        <div class="container">#}
+{##}
+{#            <div class="row align-items-center">#}
+{##}
+{#                <!-- LEFT IMAGE -->#}
+{#                <div class="col-lg-6">#}
+{##}
+{#                    <div class="contact-image-wrapper">#}
+{##}
+{#                        <img#}
+{#                            src="{{ url_for('static', filename='front/images/contact-illustration.png') }}"#}
+{#                            class="img-fluid contact-image"#}
+{#                            alt="Contact VELORA"#}
+{#                        >#}
+{##}
+{#                        <div class="contact-image-caption">#}
+{#                            VELORA — Your Style, Our Passion#}
+{#                        </div>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{##}
+{#                <!-- RIGHT CONTENT -->#}
+{#                <div class="col-lg-6">#}
+{##}
+{#                    <div class="contact-content">#}
+{##}
+{#                        <span class="contact-small">#}
+{#                            WE ARE HERE FOR YOU#}
+{#                        </span>#}
+{##}
+{#                        <h2 class="contact-title">#}
+{#                            Reach Out to Us#}
+{#                        </h2>#}
+{##}
+{#                        <p class="contact-description">#}
+{#                            Have a question or need assistance?#}
+{#                            Send us a message and our team will get#}
+{#                            back to you as soon as possible.#}
+{#                        </p>#}
+{##}
+{##}
+{#                        <!-- CONTACT FORM -->#}
+{#                        <form class="contact-form">#}
+{##}
+{#                            <div class="mb-4">#}
+{#                                <label for="contactName">Full Name</label>#}
+{##}
+{#                                <input#}
+{#                                    type="text"#}
+{#                                    id="contactName"#}
+{#                                    class="form-control"#}
+{#                                    placeholder="Enter your full name"#}
+{#                                    required#}
+{#                                >#}
+{#                            </div>#}
+{##}
+{##}
+{#                            <div class="mb-4">#}
+{#                                <label for="contactEmail">Email Address</label>#}
+{##}
+{#                                <input#}
+{#                                    type="email"#}
+{#                                    id="contactEmail"#}
+{#                                    class="form-control"#}
+{#                                    placeholder="example@email.com"#}
+{#                                    required#}
+{#                                >#}
+{#                            </div>#}
+{##}
+{##}
+{#                            <div class="mb-4">#}
+{#                                <label for="contactMessage">Your Message</label>#}
+{##}
+{#                                <textarea#}
+{#                                    id="contactMessage"#}
+{#                                    class="form-control"#}
+{#                                    rows="5"#}
+{#                                    placeholder="Write your message here..."#}
+{#                                    required#}
+{#                                ></textarea>#}
+{#                            </div>#}
+{##}
+{##}
+{#                            <button type="submit" class="btn btn-contact">#}
+{#                                Send Message#}
+{#                            </button>#}
+{##}
+{#                        </form>#}
+{##}
+{##}
+{#                        <!-- CONTACT INFORMATION -->#}
+{#                        <div class="contact-info">#}
+{##}
+{#                            <div class="contact-info-item">#}
+{##}
+{#                                <div class="contact-info-icon">#}
+{#                                    <span>✉</span>#}
+{#                                </div>#}
+{##}
+{#                                <div>#}
+{#                                    <h6>Email Support</h6>#}
+{#                                    <p>Contact us for product and order assistance.</p>#}
+{#                                </div>#}
+{##}
+{#                            </div>#}
+{##}
+{##}
+{#                            <div class="contact-info-item">#}
+{##}
+{#                                <div class="contact-info-icon">#}
+{#                                    <span>♡</span>#}
+{#                                </div>#}
+{##}
+{#                                <div>#}
+{#                                    <h6>Customer Care</h6>#}
+{#                                    <p>We're happy to help you find your perfect style.</p>#}
+{#                                </div>#}
+{##}
+{#                            </div>#}
+{##}
+{#                        </div>#}
+{##}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{#            </div>#}
+{##}
+{#        </div>#}
+{#    </section>#}
+{##}
+{#</main>#}
+{##}
+{##}
+{#{% include 'front/front/share/footer.html' %}#}
+{##}
+{#<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>#}
+{##}
+{#</body>#}
+{#</html>#}

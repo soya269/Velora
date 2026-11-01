@@ -1,102 +1,430 @@
+
 {% extends "front/admin/master.html" %}
 
-{% block title %}
-    Users
-{% endblock %}
+{% block title %}Users{% endblock %}
 
 {% block page_content %}
+
+<style>
+    /* ==========================================
+       USER MANAGEMENT PAGE
+    ========================================== */
+
+    .users-page {
+        width: 100%;
+    }
+
+    .users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .users-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        font-weight: 600;
+        color: #252525;
+        margin-bottom: 5px;
+    }
+
+    .users-header p {
+        color: #888;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .add-user-btn {
+        background: #252525;
+        color: #fff;
+        border: 1px solid #252525;
+        padding: 11px 20px;
+        border-radius: 3px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: .25s ease;
+        white-space: nowrap;
+    }
+
+    .add-user-btn:hover {
+        background: #b7a58a;
+        border-color: #b7a58a;
+        color: #fff;
+    }
+
+    /* ==========================================
+       USER CARD
+    ========================================== */
+
+    .users-card {
+        background: #fff;
+        border: 1px solid #eaeaea;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, .035);
+    }
+
+    .users-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 22px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .users-card-header h5 {
+        margin: 0;
+        color: #252525;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .users-card-header span {
+        color: #999;
+        font-size: 12px;
+    }
+
+    .users-card-body {
+        padding: 0;
+    }
+
+    /* ==========================================
+       USER TABLE
+    ========================================== */
+
+    .user-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        white-space: nowrap;
+    }
+
+    .user-table thead th {
+        background: #f7f6f3;
+        color: #555;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        padding: 16px 14px;
+        border-bottom: 1px solid #eaeaea;
+        vertical-align: middle;
+    }
+
+    .user-table tbody td {
+        padding: 14px;
+        font-size: 13px;
+        color: #555;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+
+    .user-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .user-table tbody tr:hover {
+        background: #faf9f7;
+    }
+
+    .user-id {
+        width: 65px;
+    }
+
+    .user-image {
+        width: 85px;
+    }
+
+    .user-action {
+        width: 170px;
+    }
+
+    /* ==========================================
+       PROFILE IMAGE
+    ========================================== */
+
+    .user-table-avatar {
+        width: 43px;
+        height: 43px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 1px solid #e8e5df;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .user-table-avatar:hover {
+        transform: scale(1.08);
+    }
+
+    .user-name {
+        color: #252525;
+        font-weight: 600;
+    }
+
+    .user-email {
+        color: #888;
+    }
+
+    /* ==========================================
+       ROLE AND STATUS BADGES
+    ========================================== */
+
+    .user-badge {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .role-admin {
+        background: #e9edf8;
+        color: #425b9a;
+    }
+
+    .role-staff {
+        background: #e8f2f4;
+        color: #397889;
+    }
+
+    .role-other {
+        background: #f0f0f0;
+        color: #666;
+    }
+
+    .status-active {
+        background: #e7f3eb;
+        color: #398354;
+    }
+
+    .status-inactive {
+        background: #ededed;
+        color: #777;
+    }
+
+    .status-unknown {
+        background: #fff2d9;
+        color: #9b7025;
+    }
+
+    /* ==========================================
+       ACTION BUTTONS
+    ========================================== */
+
+    .user-actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .user-action-btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: .2s ease;
+        cursor: pointer;
+    }
+
+    .edit-btn {
+        background: #f2f0eb;
+        border-color: #e5e0d7;
+        color: #665b4c;
+    }
+
+    .edit-btn:hover {
+        background: #b7a58a;
+        border-color: #b7a58a;
+        color: #fff;
+    }
+
+    .delete-btn {
+        background: #fff0ef;
+        border-color: #f5d8d5;
+        color: #c44e45;
+    }
+
+    .delete-btn:hover {
+        background: #c44e45;
+        border-color: #c44e45;
+        color: #fff;
+    }
+
+    /* ==========================================
+       DELETE MODAL
+    ========================================== */
+
+    .delete-user-image {
+        width: 85px;
+        height: 85px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #eee;
+    }
+
+    .delete-user-info {
+        background: #f8f7f5;
+        border: 1px solid #eee;
+        border-radius: 3px;
+        padding: 13px 16px;
+        text-align: left;
+        font-size: 13px;
+        line-height: 2;
+        color: #666;
+    }
+
+    .delete-user-info strong {
+        color: #333;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    /* ==========================================
+       EMPTY STATE
+    ========================================== */
+
+    .empty-users {
+        padding: 65px 20px !important;
+        text-align: center;
+    }
+
+    .empty-users i {
+        font-size: 38px;
+        color: #c5b9a8;
+        margin-bottom: 15px;
+    }
+
+    .empty-users h5 {
+        color: #333;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .empty-users p {
+        color: #999;
+        font-size: 13px;
+        margin: 5px 0 0;
+    }
+
+    /* ==========================================
+       RESPONSIVE
+    ========================================== */
+
+    @media (max-width: 768px) {
+        .users-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .users-header h2 {
+            font-size: 23px;
+        }
+
+        .users-card-header {
+            padding: 15px;
+        }
+
+        .user-table thead th,
+        .user-table tbody td {
+            padding: 12px 10px;
+        }
+
+        .user-action-btn span {
+            display: none;
+        }
+
+        .user-action-btn {
+            width: 34px;
+            height: 32px;
+            padding: 0;
+        }
+    }
+</style>
+
+
+<div class="users-page">
 
     <!-- ==========================================
          PAGE HEADER
     ========================================== -->
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
+    <div class="users-header">
         <div>
-            <h2 class="mb-1">User Management</h2>
-
-            <p class="text-muted mb-0">
-                Manage all system users
-            </p>
+            <h2>User Management</h2>
+            <p>Manage all system users and their accounts.</p>
         </div>
 
-        <a
-                href="{{ url_for('admin.create_user') }}"
-                class="btn btn-primary"
-        >
+        <a href="{{ url_for('admin.create_user') }}"
+           class="add-user-btn">
             <i class="fa-solid fa-plus me-1"></i>
             Add User
         </a>
-
     </div>
 
 
     <!-- ==========================================
-         USER TABLE CARD
+         USER INVENTORY CARD
     ========================================== -->
 
-    <div class="card shadow-sm border-0">
+    <div class="users-card">
 
-        <div class="card-body">
+        <div class="users-card-header">
+            <h5>
+                <i class="fa-solid fa-users me-2"></i>
+                All Users
+            </h5>
 
+            <span>
+                {{ rows|length }} users
+            </span>
+        </div>
+
+
+        <div class="users-card-body">
             <div class="table-responsive">
 
-                <table class="table table-hover align-middle user-table">
+                <table class="table user-table align-middle">
 
-                    <!-- ==========================================
-                         TABLE HEADER
-                    =========================================== -->
-
-                    <thead class="table-dark">
-
-                    <tr>
-
-                        <th class="text-center user-id">
-                            ID
-                        </th>
-
-                        <th class="text-center user-image">
-                            Image
-                        </th>
-
-                        <th>
-                            Name
-                        </th>
-
-                        <th>
-                            Username
-                        </th>
-
-                        <th>
-                            Email
-                        </th>
-
-                        <th class="text-center">
-                            Role
-                        </th>
-
-                        <th class="text-center">
-                            Status
-                        </th>
-
-                        <th class="text-center user-action">
-                            Action
-                        </th>
-
-                    </tr>
-
+                    <thead>
+                        <tr>
+                            <th class="text-center user-id">ID</th>
+                            <th class="text-center user-image">Image</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th class="text-center">Role</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center user-action">Actions</th>
+                        </tr>
                     </thead>
 
-
-                    <!-- ==========================================
-                         TABLE BODY
-                    =========================================== -->
 
                     <tbody>
 
                     {% if rows %}
 
                         {% for user in rows %}
+
+                            {% set user_role = (user.role or '')|lower %}
+                            {% set user_status = (user.status or '')|lower %}
 
                             <tr>
 
@@ -106,39 +434,26 @@
                                 </td>
 
 
-                                <!-- ==================================
-                                     PROFILE IMAGE
-                                =================================== -->
-
+                                <!-- PROFILE IMAGE -->
                                 <td class="text-center">
 
                                     {% if user.profile %}
 
                                         <img
-                                                src="{{ url_for(
-                                        'static',
-                                        filename='uploads/users/' ~ user.profile
-                                    ) }}"
-                                                alt="{{ user.name }}"
-                                                class="user-table-avatar"
-                                                onerror="
-                                                        this.onerror=null;
-                                                        this.src='{{ url_for(
-                                            'static',
-                                            filename='uploads/users/no-images.jpg'
-                                        ) }}';
-                                                        "
+                                            src="{{ url_for('static', filename='uploads/users/' ~ user.profile) }}"
+                                            alt="{{ user.name }}"
+                                            class="user-table-avatar"
+                                            onclick="showUserImage(this.src)"
+                                            onerror="this.onerror=null; this.src='{{ url_for('static', filename='uploads/users/no-images.jpg') }}';"
                                         >
 
                                     {% else %}
 
                                         <img
-                                                src="{{ url_for(
-                                        'static',
-                                        filename='uploads/users/no-images.jpg'
-                                    ) }}"
-                                                alt="No Image"
-                                                class="user-table-avatar"
+                                            src="{{ url_for('static', filename='uploads/users/no-images.jpg') }}"
+                                            alt="No Image"
+                                            class="user-table-avatar"
+                                            onclick="showUserImage(this.src)"
                                         >
 
                                     {% endif %}
@@ -148,218 +463,175 @@
 
                                 <!-- NAME -->
                                 <td>
-                                    <strong>
-                                        {{ user.name }}
+                                    <strong class="user-name">
+                                        {{ user.name or 'N/A' }}
                                     </strong>
                                 </td>
 
 
                                 <!-- USERNAME -->
                                 <td>
-                                    {{ user.username }}
+                                    {{ user.username or 'N/A' }}
                                 </td>
 
 
                                 <!-- EMAIL -->
                                 <td>
-                                    {{ user.email }}
+                                    <span class="user-email">
+                                        {{ user.email or 'N/A' }}
+                                    </span>
                                 </td>
 
 
-                                <!-- ==================================
-                                     ROLE
-                                =================================== -->
-
+                                <!-- ROLE -->
                                 <td class="text-center">
 
-                                    {% if user.role == "Admin" %}
+                                    {% if user_role == 'admin' %}
 
-                                        <span class="badge bg-primary">
-                                    {{ user.role }}
-                                </span>
+                                        <span class="user-badge role-admin">
+                                            Admin
+                                        </span>
+
+                                    {% elif user_role == 'staff' %}
+
+                                        <span class="user-badge role-staff">
+                                            Staff
+                                        </span>
 
                                     {% else %}
 
-                                        <span class="badge bg-info text-white">
-                                    {{ user.role }}
-                                </span>
+                                        <span class="user-badge role-other">
+                                            {{ user.role or 'Unknown' }}
+                                        </span>
 
                                     {% endif %}
 
                                 </td>
 
 
-                                <!-- ==================================
-                                     STATUS
-                                =================================== -->
-
+                                <!-- STATUS -->
                                 <td class="text-center">
 
-                                    {% if user.status == "Active" %}
+                                    {% if user_status == 'active' %}
 
-                                        <span class="badge bg-success">
-                                    Active
-                                </span>
+                                        <span class="user-badge status-active">
+                                            Active
+                                        </span>
 
-                                    {% elif user.status == "Inactive" %}
+                                    {% elif user_status == 'inactive' %}
 
-                                        <span class="badge bg-secondary">
-                                    Inactive
-                                </span>
+                                        <span class="user-badge status-inactive">
+                                            Inactive
+                                        </span>
 
                                     {% else %}
 
-                                        <span class="badge bg-warning text-dark">
-                                    Unknown
-                                </span>
+                                        <span class="user-badge status-unknown">
+                                            {{ user.status or 'Unknown' }}
+                                        </span>
 
                                     {% endif %}
 
                                 </td>
 
 
-                                <!-- ==================================
-                                     ACTIONS
-                                =================================== -->
-
+                                <!-- ACTIONS -->
                                 <td class="text-center">
 
                                     <div class="user-actions">
 
-                                        <!-- ==========================
-                                             EDIT
-                                        =========================== -->
-
+                                        <!-- EDIT -->
                                         <a
-                                                href="{{ url_for(
-                                        'admin.edit_user',
-                                        id=user.id
-                                    ) }}"
-                                                class="user-action-btn edit-btn"
-                                                title="Edit User"
+                                            href="{{ url_for('admin.edit_user', id=user.id) }}"
+                                            class="user-action-btn edit-btn"
+                                            title="Edit User"
                                         >
-
                                             <i class="fa-solid fa-pen-to-square"></i>
-
-                                            <span>
-                                        Edit
-                                    </span>
-
+                                            <span>Edit</span>
                                         </a>
 
 
-                                        <!-- ==========================
-                                             DELETE BUTTON
-                                        =========================== -->
-
+                                        <!-- DELETE -->
                                         <button
-                                                type="button"
-                                                class="user-action-btn delete-btn"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteUserModal{{ user.id }}"
-                                                title="Delete User"
+                                            type="button"
+                                            class="user-action-btn delete-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteUserModal{{ user.id }}"
+                                            title="Delete User"
                                         >
-
                                             <i class="fa-solid fa-trash"></i>
-
-                                            <span>
-                                        Delete
-                                    </span>
-
+                                            <span>Delete</span>
                                         </button>
 
                                     </div>
 
 
                                     <!-- ==================================
-                                         DELETE MODAL
+                                         DELETE CONFIRMATION MODAL
                                     =================================== -->
 
                                     <div
-                                            class="modal fade"
-                                            id="deleteUserModal{{ user.id }}"
-                                            tabindex="-1"
-                                            aria-labelledby="deleteUserModalLabel{{ user.id }}"
-                                            aria-hidden="true"
+                                        class="modal fade"
+                                        id="deleteUserModal{{ user.id }}"
+                                        tabindex="-1"
+                                        aria-labelledby="deleteUserModalLabel{{ user.id }}"
+                                        aria-hidden="true"
                                     >
 
                                         <div class="modal-dialog modal-dialog-centered">
 
                                             <div class="modal-content">
 
-
-                                                <!-- ======================
-                                                     MODAL HEADER
-                                                ======================= -->
-
+                                                <!-- MODAL HEADER -->
                                                 <div class="modal-header bg-danger text-white">
 
-                                                    <h5
-                                                            class="modal-title"
-                                                            id="deleteUserModalLabel{{ user.id }}"
-                                                    >
+                                                    <h5 class="modal-title"
+                                                        id="deleteUserModalLabel{{ user.id }}">
 
                                                         <i class="fa-solid fa-triangle-exclamation me-2"></i>
-
                                                         Confirm Delete
 
                                                     </h5>
 
                                                     <button
-                                                            type="button"
-                                                            class="btn-close btn-close-white"
-                                                            data-bs-dismiss="modal"
-                                                            aria-label="Close"
-                                                    ></button>
+                                                        type="button"
+                                                        class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                    </button>
 
                                                 </div>
 
 
-                                                <!-- ======================
-                                                     MODAL BODY
-                                                ======================= -->
-
+                                                <!-- MODAL BODY -->
                                                 <div class="modal-body text-center">
 
                                                     {% if user.profile %}
 
                                                         <img
-                                                                src="{{ url_for(
-                                                        'static',
-                                                        filename='uploads/users/' ~ user.profile
-                                                    ) }}"
-                                                                class="delete-user-image"
-                                                                alt="{{ user.name }}"
-                                                                onerror="
-                                                                        this.onerror=null;
-                                                                        this.src='{{ url_for(
-                                                            'static',
-                                                            filename='uploads/users/no-images.jpg'
-                                                        ) }}';
-                                                                        "
+                                                            src="{{ url_for('static', filename='uploads/users/' ~ user.profile) }}"
+                                                            class="delete-user-image"
+                                                            alt="{{ user.name }}"
+                                                            onerror="this.onerror=null; this.src='{{ url_for('static', filename='uploads/users/no-images.jpg') }}';"
                                                         >
 
                                                     {% else %}
 
                                                         <img
-                                                                src="{{ url_for(
-                                                        'static',
-                                                        filename='uploads/users/no-images.jpg'
-                                                    ) }}"
-                                                                class="delete-user-image"
-                                                                alt="No profile image"
+                                                            src="{{ url_for('static', filename='uploads/users/no-images.jpg') }}"
+                                                            class="delete-user-image"
+                                                            alt="No profile image"
                                                         >
 
                                                     {% endif %}
 
 
                                                     <h5 class="mt-3 mb-1">
-                                                        {{ user.name }}
+                                                        {{ user.name or 'N/A' }}
                                                     </h5>
 
-
                                                     <p class="text-muted mb-3">
-                                                        @{{ user.username }}
+                                                        @{{ user.username or 'N/A' }}
                                                     </p>
 
 
@@ -372,17 +644,17 @@
 
                                                         <div>
                                                             <strong>Email:</strong>
-                                                            {{ user.email }}
+                                                            {{ user.email or 'N/A' }}
                                                         </div>
 
                                                         <div>
                                                             <strong>Role:</strong>
-                                                            {{ user.role }}
+                                                            {{ user.role or 'Unknown' }}
                                                         </div>
 
                                                         <div>
                                                             <strong>Status:</strong>
-                                                            {{ user.status }}
+                                                            {{ user.status or 'Unknown' }}
                                                         </div>
 
                                                     </div>
@@ -404,49 +676,37 @@
                                                 </div>
 
 
-                                                <!-- ======================
-                                                     MODAL FOOTER
-                                                ======================= -->
-
+                                                <!-- MODAL FOOTER -->
                                                 <div class="modal-footer">
 
                                                     <button
-                                                            type="button"
-                                                            class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
+                                                        type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal"
                                                     >
-
                                                         <i class="fa-solid fa-xmark me-1"></i>
-
                                                         Cancel
-
                                                     </button>
 
 
-                                                    <!-- IMPORTANT:
-                                                         This is the ONLY DELETE FORM.
-                                                    -->
-
                                                     <form
-                                                            action="{{ url_for(
-                                                    'admin.delete_user',
-                                                    id=user.id
-                                                ) }}"
-                                                            method="POST"
-                                                            class="d-inline"
+                                                        action="{{ url_for('admin.delete_user', id=user.id) }}"
+                                                        method="POST"
+                                                        class="d-inline"
                                                     >
-                                                        <input type="hidden" name="csrf_token"
-                                                               value="{{ csrf_token() }}">
 
-                                                        <button
-                                                                type="submit"
-                                                                class="btn btn-danger"
+                                                        <input
+                                                            type="hidden"
+                                                            name="csrf_token"
+                                                            value="{{ csrf_token() }}"
                                                         >
 
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-danger"
+                                                        >
                                                             <i class="fa-solid fa-trash me-1"></i>
-
                                                             Yes, Delete User
-
                                                         </button>
 
                                                     </form>
@@ -468,33 +728,19 @@
 
                     {% else %}
 
-                        <!-- ==================================
-                             NO USERS
-                        =================================== -->
-
+                        <!-- EMPTY STATE -->
                         <tr>
+                            <td colspan="8" class="empty-users">
 
-                            <td
-                                    colspan="8"
-                                    class="text-center py-5"
-                            >
+                                <i class="fa-solid fa-users d-block"></i>
 
-                                <i
-                                        class="fa-solid fa-users fa-2x text-muted mb-3"
-                                ></i>
+                                <h5>No users found</h5>
 
-                                <div>
-                                    <strong>
-                                        No users found.
-                                    </strong>
-                                </div>
-
-                                <small class="text-muted">
-                                    Click "Add User" to create a new user.
-                                </small>
+                                <p>
+                                    Click "Add User" to create a new user account.
+                                </p>
 
                             </td>
-
                         </tr>
 
                     {% endif %}
@@ -504,11 +750,76 @@
                 </table>
 
             </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     IMAGE PREVIEW MODAL
+========================================== -->
+
+<div class="modal fade"
+     id="userImageModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content bg-dark">
+
+            <div class="modal-header border-0">
+
+                <h5 class="modal-title text-white">
+                    Profile Image
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body text-center">
+
+                <img
+                    id="userPreviewImage"
+                    src=""
+                    alt="User Preview"
+                    class="img-fluid"
+                    style="max-height: 70vh; object-fit: contain;"
+                >
+
+            </div>
 
         </div>
 
     </div>
 
+</div>
 
+
+<script>
+    /* ==========================================
+       USER IMAGE PREVIEW
+    ========================================== */
+
+    function showUserImage(imageSrc) {
+
+        const previewImage = document.getElementById('userPreviewImage');
+
+        previewImage.src = imageSrc;
+
+        const modalElement = document.getElementById('userImageModal');
+
+        const imageModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+        imageModal.show();
+    }
+</script>
 
 {% endblock %}

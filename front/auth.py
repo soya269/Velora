@@ -55,12 +55,16 @@ def register():
         return redirect(url_for("front.login"))
     return render_template("front/front/register.html")
 
-@front_bp.route("/logout")
+# @front_bp.route("/logout")
+# def logout():
+#     session.clear()
+#     flash("You have been logged out.", "success")
+#     return redirect(url_for("front.home"))
+@front_bp.route("/logout", methods=["GET", "POST"])
 def logout():
     session.clear()
     flash("You have been logged out.", "success")
-    return redirect(url_for("front.home"))
-
+    return redirect(url_for("front.login"))
 @front_bp.route("/account")
 def account():
     if "user" not in session:
