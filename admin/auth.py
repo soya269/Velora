@@ -1,6 +1,7 @@
 import os
 import uuid
 from functools import wraps
+from urllib.parse import urlsplit
 
 from flask import (
     render_template,
@@ -191,9 +192,11 @@ def admin_login():
         # REDIRECT
         # ==========================================
 
-        next_page = request.args.get("next")
+        next_page = request.args.get("next", "")
 
-        if next_page:
+        # Only allow same-host relative paths to prevent open redirects.
+        target = urlsplit(next_page)
+        if next_page and not target.netloc and not target.scheme and next_page.startswith("/") and not next_page.startswith("//"):
             return redirect(next_page)
 
         return redirect(

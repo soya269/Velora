@@ -83,11 +83,8 @@ def init_db():
                 conn.commit()
             finally:
                 conn.close()
-        from werkzeug.security import generate_password_hash
-        admin = User.query.filter_by(username="admin").first()
-        if not admin:
-            db.session.add(User(name="Administrator", username="admin", email="admin@velora.local",
-                                password=generate_password_hash("admin123"), role="Admin", status="Active"))
+        # Never create a predictable default administrator account here.
+        # Existing users (including the current administrator) remain untouched.
         for name in ["Fashion", "Electronics", "Furniture", "Shoes", "Miscellaneous"]:
             if not Category.query.filter_by(name=name).first():
                 db.session.add(Category(name=name, description=f"{name} products"))
