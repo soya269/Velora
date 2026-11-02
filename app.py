@@ -90,7 +90,7 @@ def init_db():
                 db.session.add(Category(name=name, description=f"{name} products"))
         db.session.commit()
 
-init_db()
+# Database initialization is not run automatically during Gunicorn startup.
 
 if __name__ == "__main__":
     app.run(debug=True, port=app.config.get("PORT", 8000))
